@@ -1,0 +1,86 @@
+<link href="../static/sign-in.css" rel="stylesheet">
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="form-signin w-100 m-auto">
+    <form>
+        <img class="mb-4" src="https://icon-library.com/images/health-icon-png/health-icon-png-24.jpg" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 fw-normal">Please sign-up</h1>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="FirstName">
+                    <label for="floatingInput">FirstName</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="Surname">
+                    <label for="floatingInput">Surname</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="youremail@example.com">
+                    <label for="floatingInput">Email</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="floatingPassword" placeholder="youremail@example.com">
+                    <label for="floatingPassword">Confirm email</label>
+                </div>
+             </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="City">
+                    <label for="floatingPassword">City</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Repeat password">
+                    <label for="floatingPassword">Repeat password</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="form-floating">
+                <select class="form-select form-custom" id="inlineFormCustomSelectPref">
+                    <option selected>Choose user type</option>
+                    <option value="1">Patient</option>
+                    <option value="2">Doctor</option>
+                    <option value="3">Healthcare worker</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-floating">
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}

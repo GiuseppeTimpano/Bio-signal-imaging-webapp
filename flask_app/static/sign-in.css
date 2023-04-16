@@ -35,3 +35,11 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.form-floating button{
+  margin-top: 21px;
+}
+
+.form-custom{
+  max-height: 60px;
+}

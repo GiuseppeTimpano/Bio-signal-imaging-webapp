@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template, url_for, flash, redirect
 
-app = Flask(__name__, template_folder='templates_prova')
+app = Flask(__name__)
 
 
 @app.route("/")
