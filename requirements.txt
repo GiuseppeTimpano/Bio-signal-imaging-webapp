@@ -1,1 +1,14 @@
 Flask
+Flask-Login 
+Jinja2
+WTForms
+Flask-WTF
+bcrypt
+blinker
+certifi
+cffi
+click
+Flask-Bcrypt
+Flask-Mail
+Flask-SQLAlchemy
+itsdangerous
