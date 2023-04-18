@@ -3,21 +3,40 @@
 {% block content %}
 
 <div class="form-signin w-100 m-auto">
-    <form>
+    <form method="POST", action="">
+
+        {{ form.hidden_tag() }}
+
         <img class="mb-4" src="https://icon-library.com/images/health-icon-png/health-icon-png-24.jpg" alt="" width="72" height="72">
         <h1 class="h3 mb-3 fw-normal">Please sign-up</h1>
 
         <div class="row">
             <div class="col">
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="FirstName">
+                    {{ form.first_name(class="form-control", id="floatingInput", placeholder="FirstName")}}
                     <label for="floatingInput">FirstName</label>
+                    {% if form.first_name.errors %}
+                        {{ form.username(class="form-control is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.first_name.erros %}
+                            <span> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="col">
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="Surname">
+                    {{ form.surname(class="form-control", id="floatingInput", placeholder="Surname") }}
                     <label for="floatingInput">Surname</label>
+                    {% if form.surname.erros %}
+                        {{ form.surname(class="form-controll is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.surname.errors %}
+                            <span> {{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -25,7 +44,7 @@
         <div class="row">
             <div class="col">
                 <div class="form-floating">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="youremail@example.com">
+                    {{ form.surname(class="form-control", id="floatingInput", placeholder="youremail@example.com") }}
                     <label for="floatingInput">Email</label>
                 </div>
             </div>
