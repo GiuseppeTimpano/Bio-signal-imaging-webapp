@@ -1,5 +1,7 @@
 from flask import Flask
 from flask import render_template, url_for, flash, redirect
+from flask import session
+from flask_login import logout_user
 from forms import LoginForm, SignUpForm
 
 app = Flask(__name__)
@@ -17,11 +19,12 @@ def login():
     if form.validate_on_submit():
         if form.email.data == 'admin@blog.com' and form.password.data == 'password':
             flash('You have been logged in!', 'success')
+            session['name'] = form.email.data
             return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
             return redirect(url_for('home'))
-    return render_template('login.html', title='Login', form=form)
+    return render_template('login.html', title='Login', form=form, name=session.get('name'))
 
 @app.route("/signup.html")
 def signup():
@@ -31,6 +34,10 @@ def signup():
             flash('You have been signup!', 'success')
     return render_template('signup.html', title='Sign_up', form=form)
 
+@app.route("/sign_out")
+def logout():
+    session.pop('name')
+    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
