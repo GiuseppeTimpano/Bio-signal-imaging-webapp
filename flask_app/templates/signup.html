@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="form-signin w-100 m-auto">
+<main class="form-signin w-100 m-auto">
     <form method="POST", action="">
 
         {{ form.hidden_tag() }}
@@ -16,7 +16,7 @@
                     {{ form.first_name(class="form-control", id="floatingInput", placeholder="FirstName")}}
                     <label for="floatingInput">FirstName</label>
                     {% if form.first_name.errors %}
-                        {{ form.username(class="form-control is-invalid") }}
+                        {{ form.first_name(class="form-control is-invalid") }}
                     <div class="invalid-feedback">
                         {% for error in form.first_name.erros %}
                             <span> {{ error }}</span>
@@ -100,6 +100,12 @@
             </div>
         </div>
     </form>
-</div>
+
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Already Have An Account? <a class="ml-2" href="{{ url_for('login') }}">Login Now</a>
+        </small>
+</main>
+
 
 {% endblock content %}
