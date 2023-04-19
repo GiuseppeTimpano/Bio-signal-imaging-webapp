@@ -36,20 +36,34 @@
                 <li class="nav-item">
                   <a class="nav-link text-white" href="#purpouse">Purpose</a>
                 </li>
-                <li><div href="#" class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Possibility
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-dark">
-                    <li><a class="dropdown-item" href="#images">Visualize and manage biomedical images</a></li>
-                    <li><a class="dropdown-item" href="#signals">Visualize and manage biomedical signals</a></li>
-                    <li><a class="dropdown-item" href="#statistics">Get statistical informations</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Artificial Intelligence</a></li>
-                  </ul>
-                </div>
+                {% if session.get('name')=="admin" %}
+                  <li><div href="#" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Admin operations - {{ session.get('name') }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                      <li><a class="dropdown-item" href="#">Add new doctor to db</a></li>
+                      <li><a class="dropdown-item" href="#">Add new image to db</a></li>
+                      <li><a class="dropdown-item" href="#">Remove image from db</a></li>
+                    </ul>
+                  </div>
+                {% endif %}
+                {% if session.get('name')=="doctor" %}
+                  <li><div href="#" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Operations for doctor
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                      <li><a class="dropdown-item" href="#images">Visualize and manage biomedical images</a></li>
+                      <li><a class="dropdown-item" href="#signals">Visualize and manage biomedical signals</a></li>
+                      <li><a class="dropdown-item" href="#statistics">Get statistical informations</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Artificial Intelligence</a></li>
+                    </ul>
+                  </div>
+                {% endif %}
                   <li class="nav-item"><a class="nav-link" href="https://web.unicz.it/it/" class="nav-link px-2 link-secondary">University web site</a></li>
-                  <li class="nav-item"><a class="nav-link" href="https://github.com/GiuseppeTimpano/Bio-signal-imaging-webapp" class="nav-link px-2 link-secondary">GitHub repository</a></li>  
+                  <li class="nav-item"><a class="nav-link" href="https://github.com/GiuseppeTimpano/Bio-signal-imaging-webapp" class="nav-link px-2 link-secondary">GitHub repository</a></li>
               </ul>
               <div class="d-flex">
                 {% if session.get('name')==None %}
