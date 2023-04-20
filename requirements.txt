@@ -12,3 +12,4 @@ Flask-Bcrypt
 Flask-Mail
 Flask-SQLAlchemy
 itsdangerous
+flask_mysqldb
