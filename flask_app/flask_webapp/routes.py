@@ -1,11 +1,7 @@
-from flask import Flask
 from flask import render_template, url_for, flash, redirect
+from flask_webapp import app
 from flask import session
-from flask_login import logout_user
-from forms import LoginForm, SignUpForm
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'f0d9750d6c694693beba7b033d08a66b'
+from flask_webapp.forms import LoginForm, SignUpForm
 
 
 @app.route("/")
@@ -38,6 +34,3 @@ def signup():
 def logout():
     session.pop('name')
     return redirect(url_for('home'))
-
-if __name__ == '__main__':
-    app.run(debug=True)
