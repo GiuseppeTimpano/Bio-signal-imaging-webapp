@@ -15,6 +15,10 @@ class SignUpForm(FlaskForm):
                        validators=[DataRequired()])
     surname = StringField('Surname', 
                           validators=[DataRequired()])
+    city = StringField('City', 
+                       validators=[DataRequired()])
+    CF = StringField('CF', 
+                     validators=[DataRequired()])
     email = StringField('Email', 
                         validators=[DataRequired(), Email()])
     confirm_email = StringField('Confirm Email', 
