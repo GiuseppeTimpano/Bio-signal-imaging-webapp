@@ -31,10 +31,10 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
               <ul class="nav-tabs navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link text-white" aria-current="page" href="#aboutus">About us</a>
+                  <a class="nav-link text-white" aria-current="page" href="{{ url_for('home') }}#aboutus">About us</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link text-white" href="#purpose">Purpose</a>
+                  <a class="nav-link text-white" href="{{ url_for('home') }}#purpose">Purpose</a>
                 </li>
                 {% if session.get('name')=="admin" %}
                   <li><div href="#" class="nav-item dropdown">
