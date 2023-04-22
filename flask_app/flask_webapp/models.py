@@ -1,12 +1,20 @@
-from flask_webapp import db
-from flask_webapp import Column
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase
 
-class Bioimage(db.Model):
+class Base(DeclarativeBase):
+    pass
+
+class Bioimage(Base):
+
     __tablename__ = 'bioimage'
-    idBioimages= db.Column(db.Integer, primary_key=True)
-    Name_exame = db.Column(db.String(45), unique=True)
-    Type = db.Column(db.String(45), nullable=False)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    patient: Mapped[str] = mapped_column()
 
     def _repr_(self):
-        return f"Bioimage('{ self.idBioimages}', '{ self.Name_exame}', '{ self.Type }')"
-    
+        return f"Bioimage('{ self.id}', '{ self.patient}')"
+
+from sqlalchemy import create_engine
+engine = create_engine("sqlite://", echo=True)
+
+Base.metadata.create_all(engine)
