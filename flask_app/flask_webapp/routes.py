@@ -2,11 +2,15 @@ from flask import render_template, url_for, flash, redirect
 from flask_webapp import app
 from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm
+from flask_webapp.models import Bioimage
+from flask_webapp import db
 
 
 @app.route("/")
 @app.route("/index")
 def home():
+    db.create_all()
+    print(Bioimage.query.all())
     return render_template('index.html', title='Start page')
 
 @app.route("/login.html", methods=['GET', 'POST'])
