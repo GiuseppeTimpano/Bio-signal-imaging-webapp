@@ -2,7 +2,6 @@ from flask import render_template, url_for, flash, redirect
 from flask_webapp import app
 from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm
-from flask_webapp.models import Bioimage
 from flask_webapp import db
 
 

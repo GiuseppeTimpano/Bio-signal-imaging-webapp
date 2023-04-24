@@ -17,4 +17,6 @@ flask-migrate
 email_validator
 werkzeug
 Flask-Migrate
-flask_migrate
+Flask-Uploads
+mudicom
+pillow
