@@ -15,24 +15,43 @@ class Patient(db.Model):
     address = db.Column(db.Text, nullable=False)
     city = db.Column(db.String, nullable=False)
     CF = db.Column(db.Text, nullable=False)
+    hosp = db.relationship('Hospedalization', backref='reference_hp', lazy=True)
+    mr = db.relationship('MedicalRecord', backref='reference_mr', lazy=True)
+    
 
 class Department(db.Model):
     __tablename__ = 'department'
     department_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     department_name = db.Column(db.String, unique=True, nullable=False)
     department_email = db.Column(db.String, unique=True, nullable=False)
+    med_rec = db.relationship('MedicalRecord', backref='reference_mr', lazy=False)
+    h_work = db.relationship('HealthcareWorker', backref='reference_hw', lazy=True)
+
+
+medicalrecord_has_dicom = db.Table('medical_dicom',
+                                   db.Column('id_dicom', db.Integer, db.ForeignKey('dicom.dicom_id'), primary_key=True),
+                                   db.Column('medical_record_id', db.Integer, db.ForeignKey('medicalrecord.record_id', primary_key=True)))
 
 class MedicalRecord(db.Model):
     __tablename__ = 'medicalrecord'
     record_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     terapy = db.Column(db.Text)
-
+    type = db.Column(db.String)
+    dep_id = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=False)
+    pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
+    hosp_id = db.Column(db.Integer, db.ForeignKey('hospedalization.hospedalization_id '), nullable=False)
+    dicoms = db.relationship('Dicom', secondary='medical_dicom', lazy='subquery', backref=db.backref('medicalrecords', lazy=True))
+    
 class Hospedalization(db.Model):
     __tablename__ = 'hospedalization'
     hospedalization_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     hosp_reason = db.Column(db.Text, nullable=False)
+    pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
+    med_rec = db.relationship('MedicalRecord', backref='mr_connected', lazy=True)
+    
+
 class HealthcareWorker(db.Model):
     __tablename__ = 'healthcareworker'
     id_worker = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
@@ -42,6 +61,7 @@ class HealthcareWorker(db.Model):
     worker_type = db.Column(db.String, nullable=False)
     medical_speciality = db.Column(db.String, nullable=True)
     nurse_grade = db.Column(db.String, nullable=True)
+    dep_rif = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=False)
 
 class Dicom(db.Model):
     __tablename__ = 'dicom'
@@ -97,9 +117,3 @@ class DicomDataElement(db.Model):
     def __init__(self, data_element):
         self.name = data_element.name
         self.value = data_element.value
-
-class Biosignal(db.Model):
-    __tablename__ = 'biosignal'
-    id_Biosignal = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
-    test_name = db.Column(db.String, nullable=False)
-    exame_type = db.Column(db.String, nullable=False)

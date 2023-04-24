@@ -8,7 +8,7 @@ from flask_webapp import db
 @app.route("/")
 @app.route("/index")
 def home():
-    db.drop_all()
+    db.create_all()
     return render_template('index.html', title='Start page')
 
 @app.route("/login.html", methods=['GET', 'POST'])

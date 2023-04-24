@@ -13,6 +13,4 @@ db = SQLAlchemy()
 db.init_app(app)
 migrate = Migrate(app, db, compare_type=True)
 
-
-
 from flask_webapp import routes
