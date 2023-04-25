@@ -3,6 +3,7 @@ from flask_webapp import app
 from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm
 from flask_webapp import db
+from flask_webapp.models import Department, MedicalRecord
 
 @app.route("/")
 @app.route("/index")
