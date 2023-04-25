@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from flask_webapp import app
 from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm
@@ -16,7 +16,7 @@ def login():
     if form.validate_on_submit():
         if form.email.data == 'admin@blog.com' and form.password.data == 'password':
             flash('You have been logged in!', 'success')
-            session['name'] = "admin"
+            session['name'] = "doctor"
             return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
@@ -35,3 +35,7 @@ def signup():
 def logout():
     session.pop('name')
     return redirect(url_for('home'))
+
+@app.route("/dicom_visualizer")
+def dicom_visualizer():
+    return render_template('dicom_templates/layout_dicom.html')
