@@ -4,11 +4,9 @@ from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm
 from flask_webapp import db
 
-
 @app.route("/")
 @app.route("/index")
 def home():
-    db.create_all()
     return render_template('index.html', title='Start page')
 
 @app.route("/login.html", methods=['GET', 'POST'])

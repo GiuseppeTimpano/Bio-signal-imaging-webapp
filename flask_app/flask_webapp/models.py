@@ -1,7 +1,7 @@
 from flask_webapp import db
 from flask_uploads import UploadSet
 import mudicom
-from dicom_handler import create_thumbnail
+from flask_webapp.dicom_handler import create_thumbnail
 
 uploaded_dicoms = UploadSet('dicoms', extensions=('dcm'))
 
@@ -32,14 +32,14 @@ medicalrecord_has_dicom = db.Table('medical_dicom',
                                    db.Column('id_dicom', db.Integer, db.ForeignKey('dicom.dicom_id'), primary_key=True),
                                    db.Column('medical_record_id', db.Integer, db.ForeignKey('medicalrecord.record_id', primary_key=True)))
 
+
 class MedicalRecord(db.Model):
     __tablename__ = 'medicalrecord'
     record_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     terapy = db.Column(db.Text)
-    type = db.Column(db.String)
     dep_id = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=False)
     pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
-    hosp_id = db.Column(db.Integer, db.ForeignKey('hospedalization.hospedalization_id '), nullable=False)
+    hosp_id = db.Column(db.Integer, db.ForeignKey('hospedalization.hospedalization_id'), nullable=False)
     dicoms = db.relationship('Dicom', secondary='medical_dicom', lazy='subquery', backref=db.backref('medicalrecords', lazy=True))
     
 class Hospedalization(db.Model):
@@ -62,6 +62,7 @@ class HealthcareWorker(db.Model):
     medical_speciality = db.Column(db.String, nullable=True)
     nurse_grade = db.Column(db.String, nullable=True)
     dep_rif = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=False)
+
 
 class Dicom(db.Model):
     __tablename__ = 'dicom'
@@ -117,3 +118,4 @@ class DicomDataElement(db.Model):
     def __init__(self, data_element):
         self.name = data_element.name
         self.value = data_element.value
+

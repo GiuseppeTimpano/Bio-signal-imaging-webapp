@@ -13,10 +13,10 @@ Flask-Mail
 Flask-SQLAlchemy
 itsdangerous
 flask_mysqldb
-flask-migrate
 email_validator
 werkzeug
-Flask-Migrate
-Flask-Uploads
+flask-migrate==3.1.0
+Flask-Reuploaded
+python-gdcm
 mudicom
 pillow
