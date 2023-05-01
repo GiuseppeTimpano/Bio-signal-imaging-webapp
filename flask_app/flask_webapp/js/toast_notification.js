@@ -1,9 +1,6 @@
-const toastTrigger = document.getElementById('liveToastBtn')
-const toastLiveExample = document.getElementById('liveToast')
+document.getElementById("liveToastBtn").onclick = function() {
+  var myAlert =document.getElementById('liveToast');//select id of toast
+  var bsAlert = new bootstrap.Toast(myAlert);//inizialize it
+  bsAlert.show();//show it
+  }
 
-if (toastTrigger) {
-  const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-  toastTrigger.addEventListener('click', () => {
-    toastBootstrap.show()
-  })
-}

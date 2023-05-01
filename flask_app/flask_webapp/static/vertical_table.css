@@ -5,5 +5,9 @@
     }
 
 .table-wrapper-scroll-y {
-display: block;
+    display: block;
+}
+
+.row{
+    margin-top: 10px;
 }
