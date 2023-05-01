@@ -61,3 +61,11 @@ main {
 .scrollarea {
   overflow-y: auto;
 }
+
+.logo-side{
+  margin-right: 0px;
+}
+
+.logo-side2{
+  padding-left: 1px;
+}

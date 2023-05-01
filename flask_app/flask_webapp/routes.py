@@ -8,7 +8,7 @@ from flask_webapp.models import Department, MedicalRecord
 @app.route("/")
 @app.route("/index")
 def home():
-    return render_template('index.html', title='Start page')
+    return render_template('init_page/index.html', title='Start page')
 
 @app.route("/login.html", methods=['GET', 'POST'])
 def login():
@@ -21,7 +21,7 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
             #return redirect(url_for('login'))
-    return render_template('login.html', title='Login', form=form, name=session.get('name'))
+    return render_template('init_page/login.html', title='Login', form=form, name=session.get('name'))
 
 @app.route("/signup.html", methods=['GET', 'POST'])
 def signup():
@@ -36,6 +36,21 @@ def logout():
     session.pop('name')
     return redirect(url_for('home'))
 
-@app.route("/dicom_visualizer")
+@app.route("/dashboard")
 def dicom_visualizer():
-    return render_template('dicom_templates/layout_dicom.html')
+    return render_template('dicom_templates/layout_dicom.html', page="visualizer")
+
+@app.route("/dashboard/patient")
+def doctor_patient():
+    return render_template("dicom_templates/doctor_patients.html", page='patient')
+
+@app.route("/dashboard/dicom_image")
+def visualize_image():
+    return render_template("dicom_templates/image_visualizer.html", page="visualize_image")
+
+@app.route("/dashboard/dicom_analyzer")
+def image_analyzer():
+    return render_template("dicom_templates/image_analyzer.html", page="analyzer")
+
+
+
