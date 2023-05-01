@@ -8,7 +8,7 @@ from flask_webapp.models import Department, MedicalRecord
 @app.route("/")
 @app.route("/index")
 def home():
-    return render_template('index.html', title='Start page')
+    return render_template('init_page/index.html', title='Start page')
 
 @app.route("/login.html", methods=['GET', 'POST'])
 def login():
@@ -21,7 +21,7 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
             #return redirect(url_for('login'))
-    return render_template('login.html', title='Login', form=form, name=session.get('name'))
+    return render_template('init_page/login.html', title='Login', form=form, name=session.get('name'))
 
 @app.route("/signup.html", methods=['GET', 'POST'])
 def signup():

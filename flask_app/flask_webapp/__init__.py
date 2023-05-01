@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 app.config['SECRET_KEY'] = 'f0d9750d6c694693beba7b033d08a66b'
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + os.path.join(base_dir, 'data.sqlite')
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
