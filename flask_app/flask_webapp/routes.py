@@ -39,3 +39,8 @@ def logout():
 @app.route("/dicom_visualizer")
 def dicom_visualizer():
     return render_template('dicom_templates/layout_dicom.html')
+
+@app.route("/doctor/patient")
+def doctor_patient():
+    return render_template("dicom_templates/doctor_patients.html", page='patient')
+
