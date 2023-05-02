@@ -29,7 +29,7 @@ def signup():
     if form.validate_on_submit():
         if form.first_name.data == 'Giuseppe' and form.surname.data == 'Timpano':
             flash('You have been signup!', 'success')
-    return render_template('signup.html', title='Sign_up', form=form)
+    return render_template('init_page/signup.html', title='Sign_up', form=form)
 
 @app.route("/sign_out")
 def logout():
@@ -38,19 +38,27 @@ def logout():
 
 @app.route("/dashboard")
 def dicom_visualizer():
-    return render_template('dicom_templates/dash_home.html', page="visualizer")
+    return render_template('doctor_templates/dash_home.html', page="visualizer")
 
 @app.route("/dashboard/patient")
 def doctor_patient():
-    return render_template("dicom_templates/doctor_patients.html", page='patient')
+    return render_template("doctor_templates/doctor_patients.html", page='patient')
 
 @app.route("/dashboard/dicom_image")
 def visualize_image():
-    return render_template("dicom_templates/image_visualizer.html", page="visualize_image")
+    return render_template("doctor_templates/image_visualizer.html", page="visualize_image")
 
 @app.route("/dashboard/dicom_analyzer")
 def image_analyzer():
-    return render_template("dicom_templates/image_analyzer.html", page="analyzer")
+    return render_template("doctor_templates/image_analyzer.html", page="analyzer")
+
+@app.route("/dashboard/biosignals_visualizer")
+def biosignals_visualizer():
+    return render_template("doctor_templates/biosignals_visualizer.html", page="visualize_biosignals")
+
+@app.route("/dashboard/biosignals_analyzer")
+def biosignals_analyzer():
+    return render_template("doctor_templates/biosignals_analyzer.html", page="analyze_biosignals")
 
 
 

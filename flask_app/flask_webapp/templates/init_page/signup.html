@@ -95,7 +95,7 @@
         <div class="row">
             <div class="col">
                 <div class="form-floating">
-                    {{ form.city(type="email", class="form-control", id="floatingPassword", placeholder="Your City") }}
+                    {{ form.city(type="text", class="form-control", id="floatingPassword", placeholder="Your City") }}
                     <label for="floatingPassword">City</label>
                     {% if form.city.errors %}
                         {{ form.city(class="form-control is-invalid") }}
@@ -112,7 +112,7 @@
         <div class="row">
             <div class="col">
                 <div class="form-floating">
-                    {{ form.password(type="email", class="form-control", id="floatingPassword", placeholder="Password") }}
+                    {{ form.password(type="password", class="form-control", id="floatingPassword", placeholder="Password") }}
                     <label for="floatingPassword">Password</label>
                     {% if form.password.errors %}
                         {{ form.password(class="form-control is-invalid") }}
@@ -126,7 +126,7 @@
             </div>
             <div class="col">
                 <div class="form-floating">
-                    {{ form.confirm_password(type="email", class="form-control", id="floatingPassword", placeholder="Reapeat password") }}
+                    {{ form.confirm_password(type="password", class="form-control", id="floatingPassword", placeholder="Reapeat password") }}
                     <label for="floatingPassword">Repeat password</label>
                     {% if form.confirm_password.errors %}
                         {{ form.confirm_password(class="form-control is-invalid") }}
