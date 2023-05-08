@@ -17,7 +17,10 @@ class Patient(db.Model):
     CF = db.Column(db.Text, nullable=False)
     hosp = db.relationship('Hospedalization', backref='reference_hp', lazy=True)
     mr = db.relationship('MedicalRecord', backref='reference_mr', lazy=True)
-    
+
+class Admin(db.Model):
+    __tablename__ = "admin"
+    id_admin = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
 
 class Department(db.Model):
     __tablename__ = 'department'
