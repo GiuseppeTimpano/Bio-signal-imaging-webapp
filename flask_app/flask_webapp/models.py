@@ -17,13 +17,13 @@ class Patient(db.Model):
     CF = db.Column(db.Text, nullable=False)
     hosp = db.relationship('Hospedalization', backref='reference_hp', lazy=True)
     mr = db.relationship('MedicalRecord', backref='reference_mr', lazy=True)
-    
 
 class Department(db.Model):
     __tablename__ = 'department'
     department_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     department_name = db.Column(db.String, unique=True, nullable=False)
     department_email = db.Column(db.String, unique=True, nullable=False)
+    telephon_numb = db.Column(db.String, unique=True, nullable=False)
     med_rec = db.relationship('MedicalRecord', backref='reference_mr', lazy=False)
     h_work = db.relationship('HealthcareWorker', backref='reference_hw', lazy=True)
 
@@ -50,7 +50,11 @@ class Hospedalization(db.Model):
     hosp_reason = db.Column(db.Text, nullable=False)
     pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
     med_rec = db.relationship('MedicalRecord', backref='mr_connected', lazy=True)
-    
+
+class Admin(db.Model):
+    __tablename__ = "admin"
+    id_admin = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    name_admin = db.Column(db.Integer, primary_key=True, nullable=False) 
 
 class HealthcareWorker(db.Model):
     __tablename__ = 'healthcareworker'
