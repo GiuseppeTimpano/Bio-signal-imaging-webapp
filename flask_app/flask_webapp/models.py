@@ -1,22 +1,29 @@
-from flask_webapp import db
+from flask_webapp import db, login_manager
 from flask_uploads import UploadSet
 import mudicom
 from flask_webapp.dicom_handler import create_thumbnail
+from flask_login import UserMixin
 
 uploaded_dicoms = UploadSet('dicoms', extensions=('dcm'))
 
-class Patient(db.Model):
+@login_manager.user_loader
+def load_patient(patient_id):
+    return Patient.query.get(int(patient_id))
+
+class Patient(db.Model, UserMixin):
     __tablename__ = 'patient'
     id_patient = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
-    name = db.Column(db.String, nullable=False)
+    password_patient = db.Column(db.Integer, unique=True, nullable=True)
+    email = db.Column(db.String, unique=True, nullable=True)
+    first_name = db.Column(db.String, nullable=False)
     surname = db.Column(db.String, nullable=False)
-    birth_date = db.Column(db.Date, nullable=False)
-    phone_number = db.Column(db.BigInteger)
-    address = db.Column(db.Text, nullable=False)
-    city = db.Column(db.String, nullable=False)
-    CF = db.Column(db.Text, nullable=False)
-    hosp = db.relationship('Hospedalization', backref='reference_hp', lazy=True)
-    mr = db.relationship('MedicalRecord', backref='reference_mr', lazy=True)
+    birth_date = db.Column(db.Date, nullable=True)
+    phone_number = db.Column(db.BigInteger, nullable=True)
+    address = db.Column(db.Text, nullable=True)
+    city = db.Column(db.String, nullable=True)
+    CF = db.Column(db.Text, nullable=True)
+    hosp = db.relationship('Hospedalization', backref='pat_hosp', lazy=True)
+    mr = db.relationship('MedicalRecord', backref='pat_mr', lazy=True)
 
 class Admin(db.Model):
     __tablename__ = "admin"
@@ -40,9 +47,9 @@ class MedicalRecord(db.Model):
     __tablename__ = 'medicalrecord'
     record_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     terapy = db.Column(db.Text)
-    dep_id = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=False)
-    pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
-    hosp_id = db.Column(db.Integer, db.ForeignKey('hospedalization.hospedalization_id'), nullable=False)
+    dep_id = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=True)
+    pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=True)
+    hosp_id = db.Column(db.Integer, db.ForeignKey('hospedalization.hospedalization_id'), nullable=True)
     dicoms = db.relationship('Dicom', secondary='medical_dicom', lazy='subquery', backref=db.backref('medicalrecords', lazy=True))
     
 class Hospedalization(db.Model):
@@ -51,7 +58,7 @@ class Hospedalization(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     hosp_reason = db.Column(db.Text, nullable=False)
-    pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
+    pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=True)
     med_rec = db.relationship('MedicalRecord', backref='mr_connected', lazy=True)
     
 

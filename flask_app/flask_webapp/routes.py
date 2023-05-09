@@ -4,6 +4,9 @@ from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm
 from flask_webapp import db
 from flask_webapp.models import Department, MedicalRecord
+from flask_login import login_user, current_user, logout_user, login_required
+from flask_webapp import bcrypt
+from flask_webapp.models import Patient
 
 @app.route("/")
 @app.route("/index")
@@ -27,8 +30,13 @@ def login():
 def signup():
     form = SignUpForm()
     if form.validate_on_submit():
-        if form.first_name.data == 'Giuseppe' and form.surname.data == 'Timpano':
-            flash('You have been signup!', 'success')
+        heashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        patient = Patient(id_patient=45125632, password_patient=heashed_password, email=form.email.data, 
+                          first_name=form.first_name.data, surname=form.surname.data)
+        db.session.add(patient)
+        db.session.commit()
+        flash('You have been signup!', 'success')
+        return redirect(url_for('login'))
     return render_template('init_page/signup.html', title='Sign_up', form=form)
 
 @app.route("/sign_out")

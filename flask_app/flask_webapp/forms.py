@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from flask_webapp.models import Patient
 
 class LoginForm(FlaskForm):
     email = StringField('Email', 
@@ -26,3 +27,10 @@ class SignUpForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', 
                                      validators=[DataRequired()])
     submit = SubmitField('Login')
+
+    def validate_account(self, email):
+        email = Patient.query.filter_by(email=self.email.data).first()
+        if email:
+            raise ValidationError("Already exist an account with this email, please login or create an account with an other email address")
+    
+    
