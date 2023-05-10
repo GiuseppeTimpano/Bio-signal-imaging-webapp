@@ -3,6 +3,13 @@
 {% block content %}
     <main class="form-signin w-100 m-auto">
 
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+        {% endfor %}
+
         <form method="POST" action="">
 
             {{ form.hidden_tag() }}

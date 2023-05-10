@@ -7,6 +7,7 @@ from flask_webapp.models import Department, MedicalRecord
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_webapp import bcrypt
 from flask_webapp.models import Patient
+import random
 
 @app.route("/")
 @app.route("/index")
@@ -31,12 +32,16 @@ def signup():
     form = SignUpForm()
     if form.validate_on_submit():
         heashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        patient = Patient(id_patient=45125632, password_patient=heashed_password, email=form.email.data, 
-                          first_name=form.first_name.data, surname=form.surname.data)
-        db.session.add(patient)
-        db.session.commit()
-        flash('You have been signup!', 'success')
-        return redirect(url_for('login'))
+        patient = Patient(id_patient=random.randint(1000, 1057895), password_patient=heashed_password, email=form.email.data, 
+                          first_name=form.first_name.data, surname=form.surname.data,
+                          CF=form.CF.data, city=form.city.data)
+        if Patient.query.filter_by(CF=patient.CF).first():
+            flash("Already exits patient with this CF. Please, login!")
+        else:
+            db.session.add(patient)
+            db.session.commit()
+            flash('You have been signup!', 'success')
+            return redirect(url_for('login'))
     return render_template('init_page/signup.html', title='Sign_up', form=form)
 
 @app.route("/sign_out")
