@@ -24,6 +24,7 @@ class Patient(db.Model, UserMixin):
     CF = db.Column(db.Text, nullable=True)
     hosp = db.relationship('Hospedalization', backref='pat_hosp', lazy=True)
     mr = db.relationship('MedicalRecord', backref='pat_mr', lazy=True)
+    images = db.relationship('Dicom_Image', backref='images', lazy=True)
 
 class Admin(db.Model):
     __tablename__ = "admin"
@@ -50,7 +51,7 @@ class MedicalRecord(db.Model):
     dep_id = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=True)
     pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=True)
     hosp_id = db.Column(db.Integer, db.ForeignKey('hospedalization.hospedalization_id'), nullable=True)
-    dicoms = db.relationship('Dicom', secondary='medical_dicom', lazy='subquery', backref=db.backref('medicalrecords', lazy=True))
+    dicoms = db.relationship('Dicom_Image', secondary='medical_dicom', lazy='subquery', backref=db.backref('medicalrecords', lazy=True))
     
 class Hospedalization(db.Model):
     __tablename__ = 'hospedalization'
@@ -74,58 +75,10 @@ class HealthcareWorker(db.Model):
     dep_rif = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=False)
 
 
-class Dicom(db.Model):
+class Dicom_Image(db.Model):
     __tablename__ = 'dicom'
     dicom_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
-    _filename = db.Column('filename', db.String(120))
-    exame_type = db.Column(db.String, unique=False, nullable=False)
-    exame_name = db.Column(db.String, unique=False, nullable=False)
-    data_elements = db.relationship('DicomDataElement', backref='dicom',
-                                    lazy='dynamic')
-
-    def __init__(self, filename):
-        self._filename = filename
-        self.data_elements = self._generate_data_elements(filename)
-
-        fp = uploaded_dicoms.path(self.filename)
-        thumbnail_fp = fp.replace('.dcm', '.thumb.jpeg')
-        create_thumbnail(str(fp), str(thumbnail_fp))
-
-    @property
-    def thumbnail_filename(self):
-        return self._filename.replace(".dcm", ".thumb.jpeg")
-
-    @property
-    def filename(self):
-        return self._filename
-
-    @filename.setter
-    def filename(self, filename):
-        self._filename = filename
-
-    @property
-    def filename_url(self):
-        return uploaded_dicoms.url(self.filename)
-
-    @property
-    def thumbnail_url(self):
-        return uploaded_dicoms.url(self.thumbnail_filename)
-    
-    def _generate_data_elements(self, filename):
-        mu = mudicom.load(uploaded_dicoms.path(filename))
-        return [DicomDataElement(e) for e in mu.find()]
-    
-    def _repr_(self):
-        return f"Bioimage('{ self.id_bioimage}', '{ self.exame_type}')"
-    
-
-class DicomDataElement(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    value = db.Column(db.Text())
-    dicom_id = db.Column(db.Integer, db.ForeignKey('dicom.dicom_id'))
-
-    def __init__(self, data_element):
-        self.name = data_element.name
-        self.value = data_element.value
+    filename = db.Column('filename', db.String(120))
+    exame_name = db.Column(db.String, unique=False, nullable=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
 

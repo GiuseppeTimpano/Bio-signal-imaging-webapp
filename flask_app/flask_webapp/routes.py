@@ -6,7 +6,9 @@ from flask_webapp import db
 from flask_webapp.models import Department, MedicalRecord
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_webapp import bcrypt
-from flask_webapp.models import Patient
+from flask_webapp.models import Patient, Dicom_Image
+from werkzeug.utils import secure_filename
+import os
 import random
 
 @app.route("/")
@@ -44,6 +46,7 @@ def signup():
             return redirect(url_for('login'))
     return render_template('init_page/signup.html', title='Sign_up', form=form)
 
+
 @app.route("/sign_out")
 def logout():
     session.pop('name')
@@ -64,6 +67,19 @@ def visualize_image():
 @app.route("/dashboard/dicom_analyzer")
 def image_analyzer():
     return render_template("doctor_templates/image_analyzer.html", page="analyzer")
+
+@app.route("/dashboard/add_image/<patient_id>", methods=['GET', 'POST'])
+def add_image(patient_id):
+    if request.method=='POST':
+        file=request.files['dicom']
+        filename = file.filename
+        dicom = Dicom_Image(dicom_id=random.randint(1000, 1876364), filename=filename,
+                            patient_id=patient_id)
+        db.session.add(dicom)
+        db.session.commit()
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    return render_template('doctor_templates/add_image.html', patient_id=patient_id, page='add')
+
 
 @app.route("/dashboard/biosignals_visualizer")
 def biosignals_visualizer():

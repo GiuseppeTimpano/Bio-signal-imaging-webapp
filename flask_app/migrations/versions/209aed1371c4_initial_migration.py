@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: 8c9c38f6a802
+Revision ID: 209aed1371c4
 Revises: 
-Create Date: 2023-05-09 16:38:02.098006
+Create Date: 2023-05-12 12:07:59.577268
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '8c9c38f6a802'
+revision = '209aed1371c4'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,14 +32,6 @@ def upgrade():
     sa.UniqueConstraint('department_id'),
     sa.UniqueConstraint('department_name')
     )
-    op.create_table('dicom',
-    sa.Column('dicom_id', sa.Integer(), nullable=False),
-    sa.Column('filename', sa.String(length=120), nullable=True),
-    sa.Column('exame_type', sa.String(), nullable=False),
-    sa.Column('exame_name', sa.String(), nullable=False),
-    sa.PrimaryKeyConstraint('dicom_id'),
-    sa.UniqueConstraint('dicom_id')
-    )
     op.create_table('patient',
     sa.Column('id_patient', sa.Integer(), nullable=False),
     sa.Column('password_patient', sa.Integer(), nullable=True),
@@ -56,13 +48,14 @@ def upgrade():
     sa.UniqueConstraint('id_patient'),
     sa.UniqueConstraint('password_patient')
     )
-    op.create_table('dicom_data_element',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=200), nullable=True),
-    sa.Column('value', sa.Text(), nullable=True),
-    sa.Column('dicom_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['dicom_id'], ['dicom.dicom_id'], ),
-    sa.PrimaryKeyConstraint('id')
+    op.create_table('dicom',
+    sa.Column('dicom_id', sa.Integer(), nullable=False),
+    sa.Column('filename', sa.String(length=120), nullable=True),
+    sa.Column('exame_name', sa.String(), nullable=True),
+    sa.Column('patient_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['patient_id'], ['patient.id_patient'], ),
+    sa.PrimaryKeyConstraint('dicom_id'),
+    sa.UniqueConstraint('dicom_id')
     )
     op.create_table('healthcareworker',
     sa.Column('id_worker', sa.Integer(), nullable=False),
@@ -116,9 +109,8 @@ def downgrade():
     op.drop_table('medicalrecord')
     op.drop_table('hospedalization')
     op.drop_table('healthcareworker')
-    op.drop_table('dicom_data_element')
-    op.drop_table('patient')
     op.drop_table('dicom')
+    op.drop_table('patient')
     op.drop_table('department')
     op.drop_table('admin')
     # ### end Alembic commands ###

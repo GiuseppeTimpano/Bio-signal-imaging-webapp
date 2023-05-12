@@ -1,0 +1,11 @@
+{% extends "doctor_templates/layout_doctor.html" %}
+{% block visualizer %}
+<h1>Upload DICOM for patient {{ patient_id }}</h1>
+<form method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="dicom">Select DICOM file:</label>
+        <input type="file" name="dicom" class="form-control-file" id="dicom">
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+{% endblock %}
