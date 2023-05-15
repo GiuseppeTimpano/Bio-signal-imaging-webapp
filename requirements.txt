@@ -20,3 +20,5 @@ Flask-Reuploaded
 python-gdcm
 mudicom
 pillow
+pydicom
+scikit-image

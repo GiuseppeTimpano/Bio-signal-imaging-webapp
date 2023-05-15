@@ -3,6 +3,7 @@ from flask_uploads import UploadSet
 import mudicom
 from flask_webapp.dicom_handler import create_thumbnail
 from flask_login import UserMixin
+from datetime import datetime
 
 uploaded_dicoms = UploadSet('dicoms', extensions=('dcm'))
 
@@ -21,7 +22,7 @@ class Patient(db.Model, UserMixin):
     phone_number = db.Column(db.BigInteger, nullable=True)
     address = db.Column(db.Text, nullable=True)
     city = db.Column(db.String, nullable=True)
-    CF = db.Column(db.Text, nullable=True)
+    CF = db.Column(db.Text, nullable=True, unique=True)
     hosp = db.relationship('Hospedalization', backref='pat_hosp', lazy=True)
     mr = db.relationship('MedicalRecord', backref='pat_mr', lazy=True)
     images = db.relationship('Dicom_Image', backref='images', lazy=True)
@@ -79,6 +80,8 @@ class Dicom_Image(db.Model):
     __tablename__ = 'dicom'
     dicom_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     filename = db.Column('filename', db.String(120))
+    date = db.Column(db.Date, nullable=False, default=datetime.now().date())
     exame_name = db.Column(db.String, unique=False, nullable=True)
+    data_blob = db.Column(db.LargeBinary, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
 

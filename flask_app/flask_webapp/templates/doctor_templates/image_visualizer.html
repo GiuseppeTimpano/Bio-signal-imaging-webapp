@@ -1,3 +1,60 @@
 {% extends "doctor_templates/layout_doctor.html" %}
 {% block visualizer %}
+<body>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+
+    <div class="container mt-3">
+        <h1>Visualize image</h1>
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="CF">Patient CF</label>
+                <input type="text" name="CF" class="form-control" id="CF" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Patient name</label>
+                <input type="text" name="name" class="form-control" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="surname">Patient surname</label>
+                <input type="text" name="surname" class="form-control" id="surname" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Image type</label>
+                <input type="text" name="type" class="form-control" id="type" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Send patient data</button>
+        </form>
+        {% if patient %}
+            <hr>
+            <h2>Select an image for {{ patient.first_name }} {{ patient.surname }}</h2>
+            <form method="POST" action="{{ url_for('view_selected_image') }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="images">Images for selected patient</label>
+                    <select class="form-control" id="images" name="images" onchange="updateSelectedImage()">
+                        {% for image in images %}
+                        <option value="{{ image.data_blob }}">{{ image.filename }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <script>
+                    function updateSelectedImage() {
+                        var selectedImage = document.getElementById("image-dropdown").value;
+                        document.getElementById("selected-image-input").value = selectedImage;
+                    }
+                </script>
+                <button type="submit" class="btn btn-primary">Select Image</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
 {% endblock %}

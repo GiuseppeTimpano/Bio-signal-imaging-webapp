@@ -1,0 +1,6 @@
+[submodule "flask_app/flask_webapp/static/flask_app/flask_webapp/static"]
+	path = flask_app/flask_webapp/static/flask_app/flask_webapp/static
+	url = https://github.com/rii-mango/Papaya.git
+[submodule "flask_app/flask_webapp/static/Papaya"]
+	path = flask_app/flask_webapp/static/Papaya
+	url = https://github.com/rii-mango/Papaya.git

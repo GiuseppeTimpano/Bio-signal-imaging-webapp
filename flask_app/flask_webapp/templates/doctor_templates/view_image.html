@@ -1,0 +1,15 @@
+{% extends "doctor_templates/layout_doctor.html" %}
+{% block head %}
+  <script type="text/javascript" src="../../static/Papaya/release/current/standard/papaya.js"></script>
+  <link rel="stylesheet" type="text/css" href="../../static/Papaya/release/current/standard/papaya.css">
+  <script>
+    var params = []
+    params["images"] = ["../../static/000005.nii"];
+  </script>
+{% endblock %}
+
+{% block visualizer %}
+<div style="width:900px; height:900px; justify-content:center; align-items:center;">
+  <div class="papaya" data-params="params"></div>
+</div>
+{% endblock %}

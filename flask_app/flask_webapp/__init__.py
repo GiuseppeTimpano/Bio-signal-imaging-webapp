@@ -14,6 +14,7 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['MESSAGE_FLASHING_OPTIONS'] = {'duration': 5}
 path_to_save = 'flask_app/uploads'
 app.config['UPLOAD_FOLDER'] = path_to_save
+app.static_url_path = 'Papaya/release/current/standard'
 db = SQLAlchemy()
 db.init_app(app)
 migrate = Migrate(app, db)
