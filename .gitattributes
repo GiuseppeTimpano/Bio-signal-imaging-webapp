@@ -10,3 +10,4 @@ flask_app/flask_webapp/static/Papaya/README.md filter=lfs diff=lfs merge=lfs -te
 flask_app/flask_webapp/static/Papaya/release filter=lfs diff=lfs merge=lfs -text
 flask_app/flask_webapp/static/Papaya/lib filter=lfs diff=lfs merge=lfs -text
 flask_app/flask_webapp/static/Papaya/LICENSE filter=lfs diff=lfs merge=lfs -text
+*.nii filter=lfs diff=lfs merge=lfs -text
