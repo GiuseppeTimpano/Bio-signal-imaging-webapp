@@ -14,6 +14,7 @@ from datetime import datetime
 import skimage.transform as sktransform
 import pydicom
 import io
+import base64
 
 @app.route("/")
 @app.route("/index")
@@ -89,11 +90,7 @@ def view_selected_image():
     if (image_selected is None):
         flash('No image in selected')
     else:
-        image_selected = image_selected.encode('latin-1')
-        print(type(image_selected))
-        #image_selected = io.BytesIO(image_selected)
-        #image_selected_dcm = pydicom.dcmread(image_selected, force=True)
-        return render_template('doctor_templates/view_image.html', image_data = "../../static/CT.1.2.246.352.71.3.164087780.2233476.20130213140517.dcm")
+        return render_template('doctor_templates/view_image.html', image_data = image_selected)
 
 @app.route("/dashboard/dicom_analyzer")
 def image_analyzer():
@@ -112,9 +109,10 @@ def add_image():
             return redirect(url_for('add_image'))
         
         data = file.read()
+        base64_data = base64.b64encode(data).decode('utf-8')
         dicom = Dicom_Image(dicom_id=random.randint(1000, 1876364), filename=name,
                             patient_id=patient_id, date=date, 
-                            data_blob=data)
+                            base64_data=base64_data)
         db.session.add(dicom)
         db.session.commit()
         flash('Image added successfully.')

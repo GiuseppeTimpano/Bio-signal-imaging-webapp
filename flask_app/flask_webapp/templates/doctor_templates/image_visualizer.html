@@ -42,7 +42,7 @@
                     <label for="images">Images for selected patient</label>
                     <select class="form-control" id="images" name="images" onchange="updateSelectedImage()">
                         {% for image in images %}
-                        <option value="{{ image.data_blob }}">{{ image.filename }}</option>
+                        <option value="{{ image.base64_data }}">{{ image.filename }}</option>
                         {% endfor %}
                     </select>
                 </div>

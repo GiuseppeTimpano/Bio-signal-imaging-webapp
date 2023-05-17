@@ -1,8 +1,8 @@
-"""Initial migration
+"""Initial_migration
 
-Revision ID: c8a098ac7659
+Revision ID: 4caca89097ba
 Revises: 
-Create Date: 2023-05-13 12:31:26.261830
+Create Date: 2023-05-17 18:41:52.518972
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c8a098ac7659'
+revision = '4caca89097ba'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -44,6 +44,7 @@ def upgrade():
     sa.Column('city', sa.String(), nullable=True),
     sa.Column('CF', sa.Text(), nullable=True),
     sa.PrimaryKeyConstraint('id_patient'),
+    sa.UniqueConstraint('CF'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('id_patient'),
     sa.UniqueConstraint('password_patient')
@@ -53,7 +54,7 @@ def upgrade():
     sa.Column('filename', sa.String(length=120), nullable=True),
     sa.Column('date', sa.Date(), nullable=False),
     sa.Column('exame_name', sa.String(), nullable=True),
-    sa.Column('data_blob', sa.LargeBinary(), nullable=False),
+    sa.Column('base64_data', sa.Text(), nullable=False),
     sa.Column('patient_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['patient_id'], ['patient.id_patient'], ),
     sa.PrimaryKeyConstraint('dicom_id'),

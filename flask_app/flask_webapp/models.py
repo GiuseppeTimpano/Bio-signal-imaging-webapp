@@ -82,6 +82,6 @@ class Dicom_Image(db.Model):
     filename = db.Column('filename', db.String(120))
     date = db.Column(db.Date, nullable=False, default=datetime.now().date())
     exame_name = db.Column(db.String, unique=False, nullable=True)
-    data_blob = db.Column(db.LargeBinary, nullable=False)
+    base64_data = db.Column(db.Text, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
 

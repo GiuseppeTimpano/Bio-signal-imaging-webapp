@@ -4,7 +4,8 @@
   <link rel="stylesheet" type="text/css" href="../../static/Papaya/release/current/standard/papaya.css">
   <script>
     var params = []
-    params["images"] = ["../../static/000005.nii"];
+    var base64_data = "{{ image_data }}"
+    params["encodedImages"] = [base64_data];
   </script>
 {% endblock %}
 
