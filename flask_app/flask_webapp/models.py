@@ -75,6 +75,12 @@ class HealthcareWorker(db.Model):
     nurse_grade = db.Column(db.String, nullable=True)
     dep_rif = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=False)
 
+class Vol_Dicom_Image(db.Model):
+    __tablename__ = '3ddicom'
+    dicom_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    two_dim_dicom = db.relationship('Dicom_Image', backref='2dim_image')
+    num_slice = db.Column(db.Integer, nullable=False, unique=False)
+
 
 class Dicom_Image(db.Model):
     __tablename__ = 'dicom'
@@ -82,6 +88,8 @@ class Dicom_Image(db.Model):
     filename = db.Column('filename', db.String(120))
     date = db.Column(db.Date, nullable=False, default=datetime.now().date())
     exame_name = db.Column(db.String, unique=False, nullable=True)
+    image_dimension = db.Column(db.Integer, nullable=False)
+    vol_dicom_id = db.Column(db.Integer, db.ForeignKey('3ddicom.dicom_id'), nullable=True)
     base64_data = db.Column(db.Text, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
 

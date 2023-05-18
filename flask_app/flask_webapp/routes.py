@@ -12,9 +12,11 @@ import os
 import random
 from datetime import datetime
 import skimage.transform as sktransform
-import pydicom
+import pydicom, cv2
 import io
 import base64
+from PIL import Image
+import numpy as np
 
 @app.route("/")
 @app.route("/index")
@@ -86,11 +88,39 @@ def visualize_image():
 @app.route("/dashboard/selected_image", methods=['GET', 'POST'])
 def view_selected_image():
     if request.method == 'POST':
-        image_selected = request.form['images']
+        image_selected = request.form.getlist('images')
     if (image_selected is None):
         flash('No image in selected')
     else:
+        '''
+        dcm=""
+        countor = ""
+        for file in image_selected:
+            if "dcm" in file:
+                dcm = file
+            elif "countor" in file:
+                countor = file
+        print(make_countor(dcm, countor))
+        overlay=""
+        '''
         return render_template('doctor_templates/view_image.html', image_data = image_selected)
+
+'''
+# overlay countor with anatomical image
+def make_countor(anatomical_image_b64, countor_b64):
+    # for anatomical image
+    anatomical_image_decode = io.BytesIO(base64.b64decode(anatomical_image_b64))
+    countor_decode = io.BytesIO(base64.b64decode(countor_b64))
+    dcm_anatomical = pydicom.dcmread(anatomical_image_decode, force=True)
+    dcm_anatomical.file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
+    dcm_countor = pydicom.dcmread(countor_decode, force=True)
+    dcm_countor.file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
+    #array_anatomical = dcm_anatomical.PixelData
+    #array_countor = dcm_countor.PixelData
+    dataset_anatomical = pydicom.Dataset()
+    dataset_anatomical.PixelData = anatomical_image_decode
+    print(dataset_anatomical.PixelData)
+'''
 
 @app.route("/dashboard/dicom_analyzer")
 def image_analyzer():
@@ -100,25 +130,26 @@ def image_analyzer():
 def add_image():
     if request.method=='POST':
         name = request.form['name']
-        file = request.files['file']
+        files = request.files.getlist('file')
         date = datetime.strptime(request.form['date'], '%Y-%m-%d')
         patient_id = int(request.form['patient'])
 
-        if not all([name, file, date, patient_id]):
+        if not all([name, files, date, patient_id]):
             flash('All fields are required.')
             return redirect(url_for('add_image'))
         
-        data = file.read()
-        base64_data = base64.b64encode(data).decode('utf-8')
-        dicom = Dicom_Image(dicom_id=random.randint(1000, 1876364), filename=name,
-                            patient_id=patient_id, date=date, 
-                            base64_data=base64_data)
-        db.session.add(dicom)
-        db.session.commit()
-        flash('Image added successfully.')
+        for file in files:
+            data = file.read()
+            file.save(os.path.join(app.config['UPLOAD_FOLDER']), file.filename)
+            base64_data = base64.b64encode(data).decode('utf-8')
+            dicom = Dicom_Image(dicom_id=random.randint(1000, 1876364), filename=file.filename,
+                                patient_id=patient_id, date=date, 
+                                base64_data=base64_data, image_dimension=2)
+            db.session.add(dicom)
+            db.session.commit()
+        flash('Images added successfully.')
     patients = Patient.query.all()
     return render_template('doctor_templates/add_image.html', patients=patients, page='add')
-
 
 @app.route("/dashboard/biosignals_visualizer")
 def biosignals_visualizer():

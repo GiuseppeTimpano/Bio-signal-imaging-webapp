@@ -40,18 +40,13 @@
             <form method="POST" action="{{ url_for('view_selected_image') }}" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="images">Images for selected patient</label>
-                    <select class="form-control" id="images" name="images" onchange="updateSelectedImage()">
+                    <select class="form-control" id="images" name="images" onchange="updateSelectedImage()"
+                    multiple required>
                         {% for image in images %}
                         <option value="{{ image.base64_data }}">{{ image.filename }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <script>
-                    function updateSelectedImage() {
-                        var selectedImage = document.getElementById("image-dropdown").value;
-                        document.getElementById("selected-image-input").value = selectedImage;
-                    }
-                </script>
                 <button type="submit" class="btn btn-primary">Select Image</button>
             </form>
         {% endif %}
