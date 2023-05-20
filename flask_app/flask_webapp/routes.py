@@ -103,24 +103,17 @@ def view_selected_image():
         print(make_countor(dcm, countor))
         overlay=""
         '''
-        return render_template('doctor_templates/view_image.html', image_data = image_selected)
+        images_name = []
+        base64_data = []
+        for value_part in image_selected:
+            split = value_part.split('|')
+            images_name.append(split[1])
+            base64_data.append(split[0])
+        return render_template('doctor_templates/view_image.html', image_data = base64_data, len=len(base64_data))
 
-'''
 # overlay countor with anatomical image
 def make_countor(anatomical_image_b64, countor_b64):
-    # for anatomical image
-    anatomical_image_decode = io.BytesIO(base64.b64decode(anatomical_image_b64))
-    countor_decode = io.BytesIO(base64.b64decode(countor_b64))
-    dcm_anatomical = pydicom.dcmread(anatomical_image_decode, force=True)
-    dcm_anatomical.file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
-    dcm_countor = pydicom.dcmread(countor_decode, force=True)
-    dcm_countor.file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
-    #array_anatomical = dcm_anatomical.PixelData
-    #array_countor = dcm_countor.PixelData
-    dataset_anatomical = pydicom.Dataset()
-    dataset_anatomical.PixelData = anatomical_image_decode
-    print(dataset_anatomical.PixelData)
-'''
+    return 
 
 @app.route("/dashboard/dicom_analyzer")
 def image_analyzer():
@@ -140,13 +133,14 @@ def add_image():
         
         for file in files:
             data = file.read()
-            file.save(os.path.join(app.config['UPLOAD_FOLDER']), file.filename)
+            filename = secure_filename(file.filename)
             base64_data = base64.b64encode(data).decode('utf-8')
             dicom = Dicom_Image(dicom_id=random.randint(1000, 1876364), filename=file.filename,
                                 patient_id=patient_id, date=date, 
                                 base64_data=base64_data, image_dimension=2)
             db.session.add(dicom)
             db.session.commit()
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         flash('Images added successfully.')
     patients = Patient.query.all()
     return render_template('doctor_templates/add_image.html', patients=patients, page='add')
