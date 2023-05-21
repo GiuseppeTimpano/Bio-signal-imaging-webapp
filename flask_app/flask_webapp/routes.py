@@ -85,31 +85,16 @@ def visualize_image():
             return render_template("doctor_templates/image_visualizer.html", page="visualize_image", images=images, patient=patient)
     return render_template("doctor_templates/image_visualizer.html", page="visualize_image")
 
-@app.route("/dashboard/selected_image", methods=['GET', 'POST'])
-def view_selected_image():
+@app.route("/dashboard/selected_image/<patient>", methods=['GET', 'POST'])
+def view_selected_image(patient):
     if request.method == 'POST':
-        image_selected = request.form.getlist('images')
+        image_selected = request.form['images']
     if (image_selected is None):
         flash('No image in selected')
     else:
-        '''
-        dcm=""
-        countor = ""
-        for file in image_selected:
-            if "dcm" in file:
-                dcm = file
-            elif "countor" in file:
-                countor = file
-        print(make_countor(dcm, countor))
-        overlay=""
-        '''
-        images_name = []
-        base64_data = []
-        for value_part in image_selected:
-            split = value_part.split('|')
-            images_name.append(split[1])
-            base64_data.append(split[0])
-        return render_template('doctor_templates/view_image.html', image_data = base64_data, len=len(base64_data))
+        dicom = Dicom_Image.query.filter_by(base64_data=image_selected).first()
+        dicom_id = dicom.dicom_id
+        return render_template('doctor_templates/view_image.html', image_data = image_selected, patient=patient, dicom_id=dicom_id)
 
 # overlay countor with anatomical image
 def make_countor(anatomical_image_b64, countor_b64):
@@ -118,6 +103,18 @@ def make_countor(anatomical_image_b64, countor_b64):
 @app.route("/dashboard/dicom_analyzer")
 def image_analyzer():
     return render_template("doctor_templates/image_analyzer.html", page="analyzer")
+
+@app.route("/add_annotation/<patient>/<dicom>",  methods=['GET', 'POST'])
+def add_medical_record(patient, dicom):
+    medical_record = MedicalRecord(record_id=random.randint(1000, 5382264),
+                                   terapy=request.form["userInput"], 
+                                   pat_id=patient)
+    db.session.add(medical_record)
+    dicom = Dicom_Image.query.filter_by(dicom_id=dicom).first()
+    medical_record.dicoms.append(dicom)
+    db.session.commit()
+    flash('Annotazione inserita con successo!', 'success')
+    return redirect(url_for('dicom_visualizer'))
 
 @app.route("/dashboard/add_image", methods=['GET', 'POST'])
 def add_image():

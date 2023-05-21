@@ -7,10 +7,8 @@
     var params = [];
     var images = [];
     var base64_data = "{{ image_data }}";
-    var image1 = "{{ image_data[0]}}"
-    var image2 = "{{ image_data[1]}}"
-    params["encodedImages"]=["image1", "image2"];
-    params["image2"]={"alpha": 0.5};
+    params["encodedImages"]=[base64_data];
+    //params["noNewFiles"]=true;
   </script>
 {% endblock %}
 
@@ -27,7 +25,7 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                      <form action="/salva-testo" method="POST">
+                      <form action="{{url_for('add_medical_record', patient=patient.id_patient, dicom=dicom_id)}}" method="POST">
                           <div class="form-group">
                               <label for="userInput"></label>
                               <textarea id="userInput" class="form-control" name="userInput" rows="5" placeholder="Inserisci testo"></textarea>
