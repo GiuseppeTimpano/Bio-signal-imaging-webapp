@@ -1,3 +1,65 @@
 {% extends "doctor_templates/layout_doctor.html" %}
+{% block head %}
+    <title>Visualizzatore Segnali Biomedici</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
 {% block visualizer %}
+<div id="chart"></div>
+    <script>
+        function parseCSVData(csvData) {
+            var lines = csvData.split("\n");
+            var headers = lines[0].split(",");
+            var data = [];
+
+            for (var i = 1; i < lines.length; i++) {
+                var values = lines[i].split(",");
+                var rowData = {};
+
+                for (var j = 0; j < headers.length; j++) {
+                    rowData[headers[j]] = parseFloat(values[j]);
+                }
+
+                data.push(rowData);
+            }
+
+            return data;
+        }
+
+        function createChart(csvData) {
+            var parsedData = parseCSVData(csvData);
+
+            var traces = Object.keys(parsedData[0]).filter(function (key) {
+                return key !== "Timestamp";
+            }).map(function (key) {
+                return {
+                    x: parsedData.map(function (row) { return row.Timestamp; }),
+                    y: parsedData.map(function (row) { return row[key]; }),
+                    mode: 'lines',
+                    name: key
+                };
+            });
+
+            var layout = {
+                title: 'Visualizzatore Segnali Biomedici',
+                xaxis: {
+                    title: 'Timestamp'
+                },
+                yaxis: {
+                    title: 'Valore Segnale'
+                }
+            };
+
+            Plotly.newPlot('chart', traces, layout);
+        }
+
+        // Esempio di dati in formato CSV
+        var csvData = `Timestamp,Segnale1,Segnale2,Segnale3
+                       0,0.5,1,0.2
+                       1,0.7,0.9,0.4
+                       2,0.9,0.6,0.6
+                       3,0.3,0.8,0.8
+                       4,0.2,0.4,0.5`;
+
+        createChart(csvData);
+    </script>
 {% endblock %}

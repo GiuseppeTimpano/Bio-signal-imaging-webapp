@@ -63,6 +63,9 @@ class Hospedalization(db.Model):
     pat_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=True)
     med_rec = db.relationship('MedicalRecord', backref='mr_connected', lazy=True)
     
+patient_group = db.Table('patient_group',
+                         db.Column('patient_id', db.Integer, db.ForeignKey('patient.id_patient'), primary_key=True),
+                         db.Column('doctor', db.Integer, db.ForeignKey('healthcareworker.id_worker'), primary_key=True))
 
 class HealthcareWorker(db.Model):
     __tablename__ = 'healthcareworker'
@@ -74,6 +77,7 @@ class HealthcareWorker(db.Model):
     medical_speciality = db.Column(db.String, nullable=True)
     nurse_grade = db.Column(db.String, nullable=True)
     dep_rif = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=False)
+    patient = db.relationship('Patient', secondary='patient_group', lazy='subquery', backref=db.backref('patients', lazy=True))
 
 class Vol_Dicom_Image(db.Model):
     __tablename__ = '3ddicom'

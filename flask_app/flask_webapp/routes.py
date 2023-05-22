@@ -53,6 +53,23 @@ def signup():
             return redirect(url_for('login'))
     return render_template('init_page/signup.html', title='Sign_up', form=form)
 
+@app.route("/dashboard/add_patient", methods=['POST'])
+def add_patient():
+    if request.method=='POST':
+        name = request.form['patient_name']
+        surname = request.form['patient_surname']
+        CF = request.form['cf']
+        date = datetime.strptime(request.form['date'], '%Y-%m-%d')
+
+        patient = Patient(id_patient=random.randint(1000, 376436543), 
+                        first_name=name, surname=surname,
+                        birth_date=date,
+                        CF=CF)
+        
+        db.session.add(patient)
+        db.session.commit()
+        flash('Patient added successfully', 'success')
+        return redirect(url_for('dicom_visualizer'))
 
 @app.route("/sign_out")
 def logout():
@@ -61,7 +78,8 @@ def logout():
 
 @app.route("/dashboard")
 def dicom_visualizer():
-    return render_template('doctor_templates/dash_home.html', page="visualizer")
+    patients = Patient.query.all()
+    return render_template('doctor_templates/dash_home.html', page="visualizer", patients=patients)
 
 @app.route("/dashboard/patient")
 def doctor_patient():
