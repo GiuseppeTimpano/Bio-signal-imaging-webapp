@@ -30,6 +30,8 @@ class Patient(db.Model, UserMixin):
 class Admin(db.Model):
     __tablename__ = "admin"
     id_admin = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.String, unique=False, nullable=False)
 
 class Department(db.Model):
     __tablename__ = 'department'
@@ -73,18 +75,11 @@ class HealthcareWorker(db.Model):
     name = db.Column(db.String, nullable=False)
     surname = db.Column(db.String, nullable=False)
     email = db.Column(db.Text, unique=True, nullable=False)
-    worker_type = db.Column(db.String, nullable=False)
-    medical_speciality = db.Column(db.String, nullable=True)
+    password = db.Column(db.String, unique=False, nullable=True)
+    role = db.Column(db.String, nullable=True)
     nurse_grade = db.Column(db.String, nullable=True)
     dep_rif = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=False)
     patient = db.relationship('Patient', secondary='patient_group', lazy='subquery', backref=db.backref('patients', lazy=True))
-
-class Vol_Dicom_Image(db.Model):
-    __tablename__ = '3ddicom'
-    dicom_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
-    two_dim_dicom = db.relationship('Dicom_Image', backref='2dim_image')
-    num_slice = db.Column(db.Integer, nullable=False, unique=False)
-
 
 class Dicom_Image(db.Model):
     __tablename__ = 'dicom'
@@ -93,7 +88,6 @@ class Dicom_Image(db.Model):
     date = db.Column(db.Date, nullable=False, default=datetime.now().date())
     exame_name = db.Column(db.String, unique=False, nullable=True)
     image_dimension = db.Column(db.Integer, nullable=False)
-    vol_dicom_id = db.Column(db.Integer, db.ForeignKey('3ddicom.dicom_id'), nullable=True)
     base64_data = db.Column(db.Text, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
 

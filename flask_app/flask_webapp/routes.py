@@ -3,7 +3,7 @@ from flask_webapp import app
 from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm
 from flask_webapp import db
-from flask_webapp.models import Department, MedicalRecord
+from flask_webapp.models import Department, MedicalRecord, HealthcareWorker, Admin
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_webapp import bcrypt
 from flask_webapp.models import Patient, Dicom_Image
@@ -11,12 +11,7 @@ from werkzeug.utils import secure_filename
 import os
 import random
 from datetime import datetime
-import skimage.transform as sktransform
-import pydicom, cv2
-import io
 import base64
-from PIL import Image
-import numpy as np
 
 @app.route("/")
 @app.route("/index")
@@ -27,13 +22,33 @@ def home():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash('You have been logged in!', 'success')
-            session['name'] = "doctor"
-            return redirect(url_for('home'))
+        username = form.email.data
+        password = form.password.data
+        patient = Patient.query.filter_by(email = username).first()
+        healthcare_worker = HealthcareWorker.query.filter_by(email = username).first()
+        admin = Admin.query.filter_by(email = username).first()
+        role = None
+        if patient and (healthcare_worker and admin) is None:
+            role = patient
+            if bcrypt.check_password_hash(role.password_patient, password):
+                flash('You have been logged in!', 'success')
+                session['name'] = "patient"
+                return redirect(url_for('home'))
+            print(form.password.data)
+        elif admin and (patient and healthcare_worker) is None:
+            role = admin
+            if form.password.data == role.password:
+                flash('You have been logged in!', 'success')
+                session['name'] = "admin"
+                return redirect(url_for('home'))
+        elif healthcare_worker and (patient and admin) is None:
+            role=healthcare_worker
+            if form.password.data == role.password:
+                flash('You have been logged in!', 'success')
+                session['name'] = "doctor"
+                return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
-            #return redirect(url_for('login'))
     return render_template('init_page/login.html', title='Login', form=form, name=session.get('name'))
 
 @app.route("/signup.html", methods=['GET', 'POST'])

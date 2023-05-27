@@ -1,29 +1,68 @@
 {% extends "doctor_templates/layout_doctor.html" %}
+
 {% block visualizer %}
-<div class="list-group">
-    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
-      <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">List group item heading</h5>
-        <small>3 days ago</small>
+<body>
+  <div class="container">
+    <h1>Pazienti</h1>
+
+    <!-- Barra di ricerca -->
+    <div class="row">
+      <div class="col-md-6">
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" placeholder="Cerca paziente" aria-label="Cerca">
+          <button class="btn btn-primary" type="submit">Cerca</button>
+        </form>
       </div>
-      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-      <small>Donec id elit non mi porta.</small>
-    </a>
-    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-      <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">List group item heading</h5>
-        <small class="text-muted">3 days ago</small>
+    </div>
+
+    <!-- Elenco pazienti -->
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <div class="list-group" id="patient-list">
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient1">
+            Paziente 1
+          </a>
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient2">
+            Paziente 2
+          </a>
+          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient3">
+            Paziente 3
+          </a>
+        </div>
       </div>
-      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-      <small class="text-muted">Donec id elit non mi porta.</small>
-    </a>
-    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-      <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">List group item heading</h5>
-        <small class="text-muted">3 days ago</small>
+      <div class="col-md-8">
+        <div class="tab-content" id="patient-content">
+          <div class="tab-pane fade" id="patient1">
+            <h4>Paziente 1</h4>
+            <p>
+              Descrizione dettagliata del Paziente 1.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Sed tempus est id enim condimentum consequat.
+              Nullam nec felis sit amet odio tincidunt gravida id sed metus.
+              Nulla eget libero mi.
+            </p>
+          </div>
+          <div class="tab-pane fade" id="patient2">
+            <h4>Paziente 2</h4>
+            <p>
+              Descrizione dettagliata del Paziente 2.
+              Ut auctor euismod augue, sed tincidunt quam auctor vitae.
+              Maecenas eu malesuada mauris, in tristique eros.
+              Aliquam consectetur, ligula ac ullamcorper vulputate, justo diam vulputate ante, vitae gravida urna nisi id felis.
+            </p>
+          </div>
+          <div class="tab-pane fade" id="patient3">
+            <h4>Paziente 3</h4>
+            <p>
+              Descrizione dettagliata del Paziente 3.
+              Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+              Etiam sed feugiat urna, eget tristique massa.
+              Sed semper massa eu velit hendrerit, ut dapibus lacus dapibus.
+              Sed eu aliquet nisi, ac dignissim mauris.
+            </p>
+          </div>
+        </div>
       </div>
-      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-      <small class="text-muted">Donec id elit non mi porta.</small>
-    </a>
+    </div>
   </div>
 {% endblock %}

@@ -1,12 +1,11 @@
 {% extends "doctor_templates/layout_doctor.html" %}
 
 {% block head %}
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 {% endblock %}
 
 {% block visualizer %}
     <div class="container">
-        <div class="row">
+        <div class="row" style="padding-top: 10px;">
             <div class="col">
                 <div class="card">
                     <div class="card-header">
@@ -30,9 +29,9 @@
                             <table class="table table-bordered table-striped mb-0">
                               <thead>
                                 <tr>
-                                  <th scope="col">#</th>
-                                  <th scope="col">First</th>
-                                  <th scope="col">Last</th>
+                                  <th scope="col">Name</th>
+                                  <th scope="col">Surname</th>
+                                  <th scope="col">Patient CF</th>
                                   <th scope="col">Handle</th>
                                 </tr>
                               </thead>
@@ -94,16 +93,45 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" style="padding-top: 10px;">
             <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        Notifications
-                    </div>
-                    <div class="card-body">
-                        <button type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>
-                    </div>
+              <div class="card">
+                <div class="card-header">
+                  Notifications
+                  <ul class="nav nav-tabs card-header-tabs float-end" id="notification-tabs">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="left-tab" data-bs-toggle="tab" href="#left-notifications">Appointment</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="right-tab" data-bs-toggle="tab" href="#right-notifications">Comunication</a>
+                    </li>
+                  </ul>
                 </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane fade show active" id="left-notifications">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                          <span class="badge bg-info">Info</span> Messaggio di notifica 1 (Sinistra)
+                        </li>
+                        <li class="list-group-item">
+                          <span class="badge bg-success">Successo</span> Messaggio di notifica 2 (Sinistra)
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="tab-pane fade" id="right-notifications">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                          <span class="badge bg-warning text-dark">Avviso</span> Messaggio di notifica 3 (Destra)
+                        </li>
+                        <li class="list-group-item">
+                          <span class="badge bg-danger">Errore</span> Messaggio di notifica 4 (Destra)
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
         </div>
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
@@ -120,5 +148,4 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
