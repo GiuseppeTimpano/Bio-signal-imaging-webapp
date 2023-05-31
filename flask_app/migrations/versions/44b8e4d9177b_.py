@@ -1,8 +1,8 @@
-"""Initial migration
+"""empty message
 
-Revision ID: b5177997a452
+Revision ID: 44b8e4d9177b
 Revises: 
-Create Date: 2023-05-27 23:41:50.871916
+Create Date: 2023-05-31 12:44:02.638447
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b5177997a452'
+revision = '44b8e4d9177b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -70,12 +70,13 @@ def upgrade():
     sa.Column('surname', sa.String(), nullable=False),
     sa.Column('email', sa.Text(), nullable=False),
     sa.Column('password', sa.String(), nullable=True),
-    sa.Column('worker_type', sa.String(), nullable=False),
-    sa.Column('medical_speciality', sa.String(), nullable=True),
+    sa.Column('CF', sa.String(), nullable=False),
+    sa.Column('role', sa.String(), nullable=True),
     sa.Column('nurse_grade', sa.String(), nullable=True),
-    sa.Column('dep_rif', sa.Integer(), nullable=False),
+    sa.Column('dep_rif', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['dep_rif'], ['department.department_id'], ),
     sa.PrimaryKeyConstraint('id_worker'),
+    sa.UniqueConstraint('CF'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('id_worker')
     )

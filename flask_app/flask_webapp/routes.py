@@ -37,15 +37,15 @@ def login():
             print(form.password.data)
         elif admin and (patient and healthcare_worker) is None:
             role = admin
-            if form.password.data == role.password:
+            if bcrypt.check_password_hash(role.password, password):
                 flash('You have been logged in!', 'success')
                 session['name'] = "admin"
                 return redirect(url_for('home'))
         elif healthcare_worker and (patient and admin) is None:
             role=healthcare_worker
-            if form.password.data == role.password:
+            if bcrypt.check_password_hash(role.password, password):
                 flash('You have been logged in!', 'success')
-                session['name'] = "doctor"
+                session['name'] = role.role
                 return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
@@ -55,17 +55,48 @@ def login():
 def signup():
     form = SignUpForm()
     if form.validate_on_submit():
+        utent = request.form['select_utent']
         heashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        patient = Patient(id_patient=random.randint(1000, 1057895), password_patient=heashed_password, email=form.email.data, 
-                          first_name=form.first_name.data, surname=form.surname.data,
-                          CF=form.CF.data, city=form.city.data)
-        if Patient.query.filter_by(CF=patient.CF).first():
-            flash("Already exits patient with this CF. Please, login!")
-        else:
-            db.session.add(patient)
-            db.session.commit()
-            flash('You have been signup!', 'success')
-            return redirect(url_for('login'))
+        if utent == '1':
+            patient = Patient(id_patient=random.randint(1000, 1057895), password_patient=heashed_password, email=form.email.data, 
+                            first_name=form.first_name.data, surname=form.surname.data,
+                            CF=form.CF.data, city=form.city.data)
+            if Patient.query.filter_by(CF=patient.CF).first():
+                flash("Already exits patient with this CF. Please, login!")
+            else:
+                db.session.add(patient)
+                db.session.commit()
+                flash('You have been signup!', 'success')
+                return redirect(url_for('login'))
+        elif utent == '2':
+            doctor = HealthcareWorker(id_worker=random.randint(1000, 1637640), password = heashed_password,
+                                      name = form.first_name.data, 
+                                      surname = form.surname.data,
+                                      CF = form.CF.data, 
+                                      email = form.email.data,
+                                      role='doctor')
+            if HealthcareWorker.query.filter_by(id_worker=doctor.id_worker).first():
+                flash("Account already exists!", "error")
+            else:
+                db.session.add(doctor)
+                db.session.commit()
+                flash('You have been signup as doctor!', 'success')
+                return redirect(url_for('login'))
+        elif utent=='3':
+            healthcareworkwer = HealthcareWorker(id_worker=random.randint(1000, 1637640),
+                                      password = heashed_password,
+                                      name = form.first_name.data, 
+                                      surname = form.surname.data,
+                                      email = form.email.data,
+                                      CF = form.CF.data, 
+                                      role='healthcareworker')
+            if HealthcareWorker.query.filter_by(id_worker=healthcareworkwer.id_worker).first():
+                flash("Account already exists!", "error")
+            else:
+                db.session.add(healthcareworkwer)
+                db.session.commit()
+                flash('You have been signup as healthcare worker!', 'success')
+                return redirect(url_for('login'))
     return render_template('init_page/signup.html', title='Sign_up', form=form)
 
 @app.route("/dashboard/add_patient", methods=['POST'])
