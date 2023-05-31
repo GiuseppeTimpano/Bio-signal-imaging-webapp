@@ -14,3 +14,8 @@
   outline: 0;
 }
 
+.dropdown-menu-no-bullets {
+  list-style: none;
+  padding-left: 0;
+}
+
