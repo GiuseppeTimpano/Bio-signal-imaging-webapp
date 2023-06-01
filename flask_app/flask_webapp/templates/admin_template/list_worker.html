@@ -1,0 +1,27 @@
+{% extends "admin_template/layout_admin.html" %}
+{%block visualizer%}
+<div class="container">
+    <h2>Doctor in db</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>email</th>
+                <th>Birth Date</th>
+                <th>Modify hw informations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hw in workers %}
+                <tr>
+                    <td>{{hw.name}}</td>
+                    <td>{{hw.surname}}</td>
+                    <td>{{hw.email}}</td>
+                    <td>{{hw.birth_date}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

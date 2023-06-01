@@ -78,8 +78,10 @@ class HealthcareWorker(db.Model):
     password = db.Column(db.String, unique=False, nullable=True)
     CF = db.Column(db.String, unique=True, nullable=False)
     role = db.Column(db.String, nullable=True)
+    birth_date = db.Column(db.String, nullable=True)
     nurse_grade = db.Column(db.String, nullable=True)
     dep_rif = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=True)
+    is_active = db.Column(db.Boolean, default=False)
     patient = db.relationship('Patient', secondary='patient_group', lazy='subquery', backref=db.backref('patients', lazy=True))
 
 class Dicom_Image(db.Model):

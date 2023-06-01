@@ -16,11 +16,17 @@ import base64
 @app.route("/")
 @app.route("/index")
 def home():
+    heashed_password = bcrypt.generate_password_hash(str('admin')).decode('utf-8')
+    admin=Admin(id_admin=12345, email='admin@admin.it', password=heashed_password)
+    if Admin.query.filter_by(id_admin=admin.id_admin).first() is None:
+        db.session.add(admin)
+        db.session.commit()
     return render_template('init_page/index.html', title='Start page')
 
 @app.route("/login.html", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    ref = None
     if form.validate_on_submit():
         username = form.email.data
         password = form.password.data
@@ -33,6 +39,7 @@ def login():
             if bcrypt.check_password_hash(role.password_patient, password):
                 flash('You have been logged in!', 'success')
                 session['name'] = "patient"
+                session['utent'] = patient.first_name
                 return redirect(url_for('home'))
             print(form.password.data)
         elif admin and (patient and healthcare_worker) is None:
@@ -40,16 +47,18 @@ def login():
             if bcrypt.check_password_hash(role.password, password):
                 flash('You have been logged in!', 'success')
                 session['name'] = "admin"
+                session['utent'] = admin.id_admin
                 return redirect(url_for('home'))
         elif healthcare_worker and (patient and admin) is None:
             role=healthcare_worker
             if bcrypt.check_password_hash(role.password, password):
                 flash('You have been logged in!', 'success')
                 session['name'] = role.role
+                session['utent'] = healthcare_worker.name
                 return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('init_page/login.html', title='Login', form=form, name=session.get('name'))
+    return render_template('init_page/login.html', title='Login', form=form, name=session.get('name'), utent=session.get('utent'))
 
 @app.route("/signup.html", methods=['GET', 'POST'])
 def signup():
@@ -60,7 +69,8 @@ def signup():
         if utent == '1':
             patient = Patient(id_patient=random.randint(1000, 1057895), password_patient=heashed_password, email=form.email.data, 
                             first_name=form.first_name.data, surname=form.surname.data,
-                            CF=form.CF.data, city=form.city.data)
+                            CF=form.CF.data, city=form.city.data,
+                            birth_date=form.birth_date.data)
             if Patient.query.filter_by(CF=patient.CF).first():
                 flash("Already exits patient with this CF. Please, login!")
             else:
@@ -74,7 +84,8 @@ def signup():
                                       surname = form.surname.data,
                                       CF = form.CF.data, 
                                       email = form.email.data,
-                                      role='doctor')
+                                      role='doctor',
+                                      birth_date=form.birth_date.data)
             if HealthcareWorker.query.filter_by(id_worker=doctor.id_worker).first():
                 flash("Account already exists!", "error")
             else:
@@ -214,5 +225,21 @@ def biosignals_visualizer():
 def biosignals_analyzer():
     return render_template("doctor_templates/biosignals_analyzer.html", page="analyze_biosignals")
 
+@app.route("/admin/")
+def admin_page():
+    return render_template("admin_template/layout_admin.html", page=None)
 
+@app.route("/admin/list_patients")
+def list_patients():
+    patients = Patient.query.all()
+    return render_template("admin_template/list_patients.html", page="patient", patients=patients)
 
+@app.route("/admin/list_doctors")
+def list_doctors():
+    doctors = HealthcareWorker.query.filter_by(role='doctor').all()
+    return render_template("admin_template/list_doctors.html", page="doctor", doctors=doctors)
+
+@app.route("/admin/list_healthcareworker")
+def list_workers():
+    worker = HealthcareWorker.query.filter_by(role='healthcareworker').all()
+    return render_template("admin_template/list_worker.html", page="worker", workers=worker)

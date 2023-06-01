@@ -26,6 +26,7 @@ class SignUpForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', 
                                      validators=[DataRequired()])
+    birth_date = StringField('BirthDate', validators=[DataRequired()])
     submit = SubmitField('Login')
 
     def validate_account(self, email):
