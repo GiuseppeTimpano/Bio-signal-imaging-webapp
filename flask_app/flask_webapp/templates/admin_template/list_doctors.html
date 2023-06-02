@@ -39,8 +39,8 @@
                     </td>
                     <td>
                         {% if doctor.is_active == True %}
-                        <form method="POST">
-                            <select class="form-select" name="department">
+                        <form method="POST" action="{{url_for('assign_doctor_department', doctor_id=doctor.id_worker)}}">
+                            <select class="form-select" name="department" id="department">
                                 <option value="">Select department for this doctor</option>
                                 {% for department in departments %}
                                     <option value="{{department.department_id}}">{{department.department_name}}</option>

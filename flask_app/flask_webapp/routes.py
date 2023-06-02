@@ -250,3 +250,12 @@ def activate_account(doctor_id):
     doctor = HealthcareWorker.query.filter_by(id_worker=doctor_id).first()
     doctor.is_active=True
     return redirect(url_for('list_doctors'))
+
+@app.route("/admin/assign_doctor_to_dep/<int:doctor_id>", methods=['POST'])
+def assign_doctor_department(doctor_id):
+    department_id = request.form.get('department')
+    doctor = HealthcareWorker.query.get(doctor_id)
+    if doctor:
+        doctor.dep_rif = department_id
+        db.session.commit()
+    return redirect(url_for('list_doctors'))
