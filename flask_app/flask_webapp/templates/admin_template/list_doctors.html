@@ -9,7 +9,8 @@
                 <th>Surname</th>
                 <th>email</th>
                 <th>Birth Date</th>
-                <th>Modify doctor informations</th>
+                <th>Account status</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +20,17 @@
                     <td>{{doctor.surname}}</td>
                     <td>{{doctor.email}}</td>
                     <td>{{doctor.birth_date}}</td>
+                    <td> {% if doctor.is_active==False %}
+                            Inactive account
+                        {% else %}
+                            Activate account
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if doctor.is_active == False %}
+                            <a href="{{ url_for('activate_account', doctor_id=doctor.id_worker) }}" class="btn btn-primary">Active doctor account</a>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

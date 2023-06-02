@@ -243,3 +243,9 @@ def list_doctors():
 def list_workers():
     worker = HealthcareWorker.query.filter_by(role='healthcareworker').all()
     return render_template("admin_template/list_worker.html", page="worker", workers=worker)
+
+@app.route("/admin/active_account/<int:doctor_id>")
+def activate_account(doctor_id):
+    doctor = HealthcareWorker.query.filter_by(id_worker=doctor_id).first()
+    doctor.is_active=True
+    return redirect(url_for('list_doctors'))
