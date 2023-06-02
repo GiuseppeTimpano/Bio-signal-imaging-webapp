@@ -1,5 +1,10 @@
 {% extends "admin_template/layout_admin.html" %}
 {% block visualizer %}
+<style>
+    th {
+      text-align: center;
+    }
+  </style>
 <div class="container">
     <h2>Doctor in db</h2>
     <table class="table table-striped">
@@ -11,6 +16,7 @@
                 <th>Birth Date</th>
                 <th>Account status</th>
                 <th>Actions</th>
+                <th>Department</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +35,19 @@
                     <td>
                         {% if doctor.is_active == False %}
                             <a href="{{ url_for('activate_account', doctor_id=doctor.id_worker) }}" class="btn btn-primary">Active doctor account</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if doctor.is_active == True %}
+                        <form method="POST">
+                            <select class="form-select" name="department">
+                                <option value="">Select department for this doctor</option>
+                                {% for department in departments %}
+                                    <option value="{{department.department_id}}">{{department.department_name}}</option>
+                                {% endfor %}
+                                <!-- Aggiungi altre opzioni di dipartimento qui -->
+                                </select>
+                        </form>
                         {% endif %}
                     </td>
                 </tr>

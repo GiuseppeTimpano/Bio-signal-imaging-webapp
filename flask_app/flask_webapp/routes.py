@@ -237,7 +237,8 @@ def list_patients():
 @app.route("/admin/list_doctors")
 def list_doctors():
     doctors = HealthcareWorker.query.filter_by(role='doctor').all()
-    return render_template("admin_template/list_doctors.html", page="doctor", doctors=doctors)
+    departments = Department.query.all()
+    return render_template("admin_template/list_doctors.html", page="doctor", doctors=doctors, departments=departments)
 
 @app.route("/admin/list_healthcareworker")
 def list_workers():
