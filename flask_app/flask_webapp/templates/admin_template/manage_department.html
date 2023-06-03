@@ -36,14 +36,16 @@
                         <th>Department Name</th>
                         <th>Head of Department</th>
                         <th>Email</th>
+                        <th>Department ID</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for department in departments %}
                         <tr>
-                            <td>{{ department.name }}</td>
-                            <td>{{ department.head_of_department.name }}</td>
-                            <td>{{ department.email }}</td>
+                            <td>{{ department.department_name }}</td>
+                            <td>{{ department.head_of_department.name }} {{department.head_of_department.surname}}</td>
+                            <td>{{ department.department_email }}</td>
+                            <td>{{ department.department_id }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

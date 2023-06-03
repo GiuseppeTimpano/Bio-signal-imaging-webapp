@@ -260,17 +260,17 @@ def assign_doctor_department(doctor_id):
         db.session.commit()
     return redirect(url_for('list_doctors'))
 
-@app.route("/admin/manage_department")
+@app.route("/admin/manage_department", methods=['POST', 'GET'])
 def manage_department():
     form = DepartmentForm()
     form.head_of_department.choices = [(doctor.id_worker, doctor.name) for doctor in HealthcareWorker.query.filter_by(role='doctor')]
     if form.validate_on_submit():
-        department = Department(name=form.name.data)
+        department = Department(department_id=random.randint(1000, 4826484), department_name=form.name.data, department_email = form.email.data)
         head_of_department_id = form.head_of_department.data
         head_of_department = HealthcareWorker.query.get(head_of_department_id)
         department.head_of_department = head_of_department
         db.session.add(department)
         db.session.commit()
-        return redirect(url_for('departments'))
+        return redirect(url_for('manage_department'))
     departments = Department.query.all()
     return render_template('admin_template/manage_department.html', page='department', departments=departments, form=form)

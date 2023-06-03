@@ -39,9 +39,9 @@ class Department(db.Model):
     department_name = db.Column(db.String, unique=True, nullable=False)
     department_email = db.Column(db.String, unique=True, nullable=False)
     med_rec = db.relationship('MedicalRecord', backref='reference_mr', lazy=False)
-    h_work = db.relationship('HealthcareWorker', backref='reference_hw', lazy=True)
-    head_of_department = db.relationship('HealthcareWorker', backref='department', lazy=True)
-
+    h_work = db.relationship('HealthcareWorker', backref='reference_hw', lazy=True, foreign_keys='HealthcareWorker.dep_rif')
+    head_of_department_id = db.Column(db.Integer, db.ForeignKey('healthcareworker.id_worker'), nullable=True)
+    head_of_department = db.relationship('HealthcareWorker', backref='department_head', uselist=False, foreign_keys=head_of_department_id)
 
 medicalrecord_has_dicom = db.Table('medical_dicom',
                                    db.Column('id_dicom', db.Integer, db.ForeignKey('dicom.dicom_id'), primary_key=True),
@@ -86,6 +86,8 @@ class HealthcareWorker(db.Model):
     dep_rif = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=True)
     is_active = db.Column(db.Boolean, default=False)
     patient = db.relationship('Patient', secondary='patient_group', lazy='subquery', backref=db.backref('patients', lazy=True))
+    department_id = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=True)
+    department = db.relationship('Department', backref='head_dep', foreign_keys=[department_id])
 
 class Dicom_Image(db.Model):
     __tablename__ = 'dicom'
