@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_webapp.models import Patient
 
@@ -34,4 +34,8 @@ class SignUpForm(FlaskForm):
         if email:
             raise ValidationError("Already exist an account with this email, please login or create an account with an other email address")
     
-    
+class DepartmentForm(FlaskForm):
+    name = StringField('Department Name', validators=[DataRequired()])
+    email = StringField('Department Email', validators=[Email(), DataRequired()])
+    head_of_department = SelectField('Head of Department', coerce=int)
+    sumbit = SubmitField('Add Department')

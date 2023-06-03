@@ -1,0 +1,55 @@
+{% extends "admin_template/layout_admin.html" %}
+{% block visualizer %}
+
+<div class="container">
+    <h1>Department Management</h1>
+
+    <div class="row">
+        <div class="col">
+            <h2>Create New Department</h2>
+            <form method="POST" action="{{ url_for('manage_department') }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.name.label }} {{ form.name(size=30, class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.head_of_department.label }} {{ form.head_of_department(class="form-select") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.email.label }} {{ form.email(size=30, class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    <input type="submit" value="Create Department" class="btn btn-primary">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col">
+            <h2>Existing Departments</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Department Name</th>
+                        <th>Head of Department</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for department in departments %}
+                        <tr>
+                            <td>{{ department.name }}</td>
+                            <td>{{ department.head_of_department.name }}</td>
+                            <td>{{ department.email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from flask_webapp import app
 from flask import session
-from flask_webapp.forms import LoginForm, SignUpForm
+from flask_webapp.forms import LoginForm, SignUpForm, DepartmentForm
 from flask_webapp import db
 from flask_webapp.models import Department, MedicalRecord, HealthcareWorker, Admin
 from flask_login import login_user, current_user, logout_user, login_required
@@ -259,3 +259,18 @@ def assign_doctor_department(doctor_id):
         doctor.dep_rif = department_id
         db.session.commit()
     return redirect(url_for('list_doctors'))
+
+@app.route("/admin/manage_department")
+def manage_department():
+    form = DepartmentForm()
+    form.head_of_department.choices = [(doctor.id_worker, doctor.name) for doctor in HealthcareWorker.query.filter_by(role='doctor')]
+    if form.validate_on_submit():
+        department = Department(name=form.name.data)
+        head_of_department_id = form.head_of_department.data
+        head_of_department = HealthcareWorker.query.get(head_of_department_id)
+        department.head_of_department = head_of_department
+        db.session.add(department)
+        db.session.commit()
+        return redirect(url_for('departments'))
+    departments = Department.query.all()
+    return render_template('admin_template/manage_department.html', page='department', departments=departments, form=form)

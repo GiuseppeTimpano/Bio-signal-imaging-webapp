@@ -1,8 +1,8 @@
-"""initial migration
+"""Initial migration
 
-Revision ID: 71f9b385f8b4
+Revision ID: 35b3b7510f10
 Revises: 
-Create Date: 2023-06-01 15:48:38.343488
+Create Date: 2023-06-03 13:07:45.064318
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '71f9b385f8b4'
+revision = '35b3b7510f10'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -73,7 +73,9 @@ def upgrade():
     sa.Column('CF', sa.String(), nullable=False),
     sa.Column('role', sa.String(), nullable=True),
     sa.Column('birth_date', sa.String(), nullable=True),
+    sa.Column('hw_role_not_doctor', sa.String(), nullable=True),
     sa.Column('nurse_grade', sa.String(), nullable=True),
+    sa.Column('special_code', sa.Integer(), nullable=True),
     sa.Column('dep_rif', sa.Integer(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['dep_rif'], ['department.department_id'], ),
