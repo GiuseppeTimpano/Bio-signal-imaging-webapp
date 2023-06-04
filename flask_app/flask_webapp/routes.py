@@ -3,7 +3,7 @@ from flask_webapp import app
 from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm, DepartmentForm
 from flask_webapp import db
-from flask_webapp.models import Department, MedicalRecord, HealthcareWorker, Admin
+from flask_webapp.models import Department, MedicalRecord, HealthcareWorker, Admin, patient_group
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_webapp import bcrypt
 from flask_webapp.models import Patient, Dicom_Image
@@ -55,6 +55,7 @@ def login():
                 flash('You have been logged in!', 'success')
                 session['name'] = role.role
                 session['utent'] = healthcare_worker.name
+                session['ID'] = healthcare_worker.id_worker
                 return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
@@ -120,13 +121,14 @@ def add_patient():
         surname = request.form['patient_surname']
         CF = request.form['cf']
         date = datetime.strptime(request.form['date'], '%Y-%m-%d')
-
+        print(session.get('ID'))
         patient = Patient(id_patient=random.randint(1000, 376436543), 
                         first_name=name, surname=surname,
                         birth_date=date,
                         CF=CF)
-        
+        doctor = HealthcareWorker.query.filter_by(id_worker=session.get('ID')).first()
         db.session.add(patient)
+        doctor.patient.append(patient)
         db.session.commit()
         flash('Patient added successfully', 'success')
         return redirect(url_for('dicom_visualizer'))
@@ -143,6 +145,8 @@ def dicom_visualizer():
 
 @app.route("/dashboard/patient")
 def doctor_patient():
+    doctor = session.get('name')
+    patient = Patient.query.filter_by()
     return render_template("doctor_templates/doctor_patients.html", page='patient')
 
 @app.route("/dashboard/dicom_image", methods=['GET', 'POST'])
@@ -277,3 +281,14 @@ def manage_department():
         return redirect(url_for('manage_department'))
     departments = Department.query.all()
     return render_template('admin_template/manage_department.html', page='department', departments=departments, form=form)
+
+@app.route("/doctor/remove_followed_patient", methods=['POST', 'GET'])
+def remove_patient():
+    doctor_id = session.get('ID')
+    patient_id = request.form.get('patient_select')
+    doctor = HealthcareWorker.query.filter_by(id_worker=doctor_id).first()
+    patient = Patient.query.filter_by(id_patient=patient_id).first()
+    doctor.patient.remove(patient)
+    db.session.commit()
+    return redirect(url_for('dicom_visualizer'))
+    

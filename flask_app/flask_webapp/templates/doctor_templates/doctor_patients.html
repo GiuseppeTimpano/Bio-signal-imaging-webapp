@@ -3,14 +3,14 @@
 {% block visualizer %}
 <body>
   <div class="container">
-    <h1>Pazienti</h1>
+    <h1>Followed patients</h1>
 
     <!-- Barra di ricerca -->
     <div class="row">
       <div class="col-md-6">
         <form class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Cerca paziente" aria-label="Cerca">
-          <button class="btn btn-primary" type="submit">Cerca</button>
+          <button class="btn btn-primary" type="submit">Search</button>
         </form>
       </div>
     </div>
@@ -19,9 +19,11 @@
     <div class="row mt-4">
       <div class="col-md-4">
         <div class="list-group" id="patient-list">
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient1">
-            Paziente 1
-          </a>
+          {% for patient in patients %}
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient1">
+              Paziente 1
+            </a>
+          {% endfor %}
           <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient2">
             Paziente 2
           </a>
