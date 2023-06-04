@@ -23,6 +23,7 @@ class Patient(db.Model, UserMixin):
     address = db.Column(db.Text, nullable=True)
     city = db.Column(db.String, nullable=True)
     CF = db.Column(db.Text, nullable=True, unique=True)
+    registered = db.Column(db.Boolean, nullable=True)
     hosp = db.relationship('Hospedalization', backref='pat_hosp', lazy=True)
     mr = db.relationship('MedicalRecord', backref='pat_mr', lazy=True)
     images = db.relationship('Dicom_Image', backref='images', lazy=True)

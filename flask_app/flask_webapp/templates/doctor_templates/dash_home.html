@@ -29,16 +29,16 @@
                             <table class="table table-bordered table-striped mb-0">
                               <thead>
                                 <tr>
+                                  <th scope="col">ID</th>
                                   <th scope="col">Name</th>
                                   <th scope="col">Surname</th>
-                                  <th scope="col">Patient CF</th>
-                                  <th scope="col">Handle</th>
+                                  <th scope="col">CF</th>
                                 </tr>
                               </thead>
                               <tbody>
                                 {% for patient in patients %}
                                 <tr>
-                                  <th scope="row">1</th>
+                                  <th scope="row">{{patient.id_patient}}</th>
                                   <td>{{patient.first_name}}</td>
                                   <td>{{patient.surname}}</td>
                                   <td>{{patient.CF}}</td>

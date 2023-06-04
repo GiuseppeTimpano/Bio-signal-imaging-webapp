@@ -67,16 +67,19 @@ def signup():
         utent = request.form['select_utent']
         heashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         if utent == '1':
-            patient = Patient(id_patient=random.randint(1000, 1057895), password_patient=heashed_password, email=form.email.data, 
-                            first_name=form.first_name.data, surname=form.surname.data,
-                            CF=form.CF.data, city=form.city.data,
-                            birth_date=form.birth_date.data)
-            if Patient.query.filter_by(CF=patient.CF).first():
-                flash("Already exits patient with this CF. Please, login!")
-            else:
-                db.session.add(patient)
+            patient = Patient.query.filter_by(CF=form.CF.data).first()
+            print(patient.birth_date)
+            if patient and patient.CF==form.CF.data and patient.registered==False:
+                #patient = Patient(id_patient=random.randint(1000, 1057895), password_patient=heashed_password, email=form.email.data, 
+                                #first_name=form.first_name.data, surname=form.surname.data,
+                                #CF=form.CF.data, city=form.city.data,
+                                #birth_date=form.birth_date.data)
+                patient.password_patient=heashed_password
+                patient.email=form.email.data
+                patient.registered=True
                 db.session.commit()
-                flash('You have been signup!', 'success')
+            else: 
+                flash("You are not in db system or you're already sign-up! Please Login")
                 return redirect(url_for('login'))
         elif utent == '2':
             doctor = HealthcareWorker(id_worker=random.randint(1000, 1637640), password = heashed_password,
