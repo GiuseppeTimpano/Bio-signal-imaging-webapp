@@ -27,6 +27,19 @@ class Patient(db.Model, UserMixin):
     hosp = db.relationship('Hospedalization', backref='pat_hosp', lazy=True)
     mr = db.relationship('MedicalRecord', backref='pat_mr', lazy=True)
     images = db.relationship('Dicom_Image', backref='images', lazy=True)
+    appointments = db.relationship('Appointment', backref='patient_appointment', lazy=True)
+
+class Appointment(db.Model):
+    __tablename__ = 'appointment'
+    id = db.Column(db.Integer, primary_key=True)
+    doctor_id = db.Column(db.Integer, db.ForeignKey('healthcareworker.id_worker'), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    time = db.Column(db.Time, nullable=False)
+    reason = db.Column(db.Text, nullable=False)
+    doctor = db.relationship('HealthcareWorker', foreign_keys=[doctor_id], backref='doctor_appointments')
+    patient = db.relationship('Patient', foreign_keys=[patient_id], backref='patient_appointments')
+
 
 class Admin(db.Model):
     __tablename__ = "admin"
@@ -89,6 +102,7 @@ class HealthcareWorker(db.Model):
     patient = db.relationship('Patient', secondary='patient_group', lazy='subquery', backref=db.backref('patients', lazy=True))
     department_id = db.Column(db.Integer, db.ForeignKey('department.department_id'), nullable=True)
     department = db.relationship('Department', backref='head_dep', foreign_keys=[department_id])
+    appointments = db.relationship('Appointment', backref='doctor_appointment', lazy=True)
 
 class Dicom_Image(db.Model):
     __tablename__ = 'dicom'

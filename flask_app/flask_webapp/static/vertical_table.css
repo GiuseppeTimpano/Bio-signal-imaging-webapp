@@ -11,3 +11,9 @@
 .row{
     margin-top: 10px;
 }
+
+.container-fluid {
+    min-height: 100vh;
+    overflow-y: scroll;
+  }
+  

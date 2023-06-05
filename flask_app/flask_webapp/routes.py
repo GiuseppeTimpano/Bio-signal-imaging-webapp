@@ -3,14 +3,14 @@ from flask_webapp import app
 from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm, DepartmentForm
 from flask_webapp import db
-from flask_webapp.models import Department, MedicalRecord, HealthcareWorker, Admin, patient_group
+from flask_webapp.models import Department, MedicalRecord, HealthcareWorker, Admin, Appointment
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_webapp import bcrypt
 from flask_webapp.models import Patient, Dicom_Image
 from werkzeug.utils import secure_filename
 import os
 import random
-from datetime import datetime
+from datetime import datetime, date
 import base64
 
 @app.route("/")
@@ -141,7 +141,22 @@ def logout():
 @app.route("/dashboard")
 def dicom_visualizer():
     patients = Patient.query.all()
-    return render_template('doctor_templates/dash_home.html', page="visualizer", patients=patients)
+
+    appointments = Appointment.query.filter_by(date=date.today()).all()
+    all_appointment = Appointment.query.all()
+
+    busy_schedule = {}
+    for appointment in appointments:
+        appointment_date = appointment.date
+        appointment_time = appointment.time
+        if appointment_date not in busy_schedule:
+            busy_schedule[appointment_date] = []
+        busy_schedule[appointment_date].append(appointment_time)
+    
+    current_date = datetime.now().strftime('%Y-%m-%d')
+
+    return render_template('doctor_templates/dash_home.html', page="visualizer", patients=patients, appointments=appointments, busy_schedule=busy_schedule, current_date=current_date, 
+                           all_appointment=all_appointment)
 
 @app.route("/dashboard/patient")
 def doctor_patient():
@@ -291,4 +306,45 @@ def remove_patient():
     doctor.patient.remove(patient)
     db.session.commit()
     return redirect(url_for('dicom_visualizer'))
+
+@app.route("/take_appointment", methods=['POST'])
+def take_appointment():
+    doctor_id = session.get('ID')
+    patient_id = request.form.get('patient_select')
+    appointment_date = request.form.get('appointment_date')
+    appointment_time = request.form.get('appointment_time')
+    appointment_reason = request.form.get('appointment_reason')
+    doctor = HealthcareWorker.query.get(doctor_id)
+    patient = Patient.query.get(patient_id)
+
+    if doctor and patient:
+        date_obj = datetime.strptime(appointment_date, '%Y-%m-%d').date()
+        time_obj = datetime.strptime(appointment_time, '%H:%M').time()
+
+        appointment = Appointment(doctor=doctor, patient=patient, date=date_obj, time=time_obj, reason=appointment_reason)
+        db.session.add(appointment)
+        db.session.commit()
+        flash('Appointment taken successfully.', 'success')
+    else:
+        flash('Failed to take appointment.', 'error')
+
+    return redirect(url_for('dicom_visualizer'))
+
+
+@app.route('/delete_appointment/', methods=['POST'])
+def delete_appointment():
+    appointment_id = request.form.get('appointment_id')
+    appointment = Appointment.query.get(appointment_id)
+
+    if appointment:
+        # Elimina l'appuntamento dal database
+        db.session.delete(appointment)
+        db.session.commit()
+
+        flash('L\'appuntamento è stato eliminato con successo.', 'success')
+    else:
+        flash('Impossibile trovare l\'appuntamento specificato.', 'error')
+
+    return redirect(url_for('dicom_visualizer'))
+
     

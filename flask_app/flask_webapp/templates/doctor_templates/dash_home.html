@@ -1,24 +1,56 @@
 {% extends "doctor_templates/layout_doctor.html" %}
 
 {% block head %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock %}
 
 {% block visualizer %}
-    <div class="container">
+    <div class="container-fluid">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert alert-success flash-message" role="alert">
+              {{ messages[0] }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endif %}
+        {% endwith %}
         <div class="row" style="padding-top: 10px;">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        Appointment
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Take new appointment</a>
-                    </div>
+          <div class="col-sm">
+            <div class="card">
+                <div class="card-header">
+                    Appointment
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Insert data to take a new appointment</h5>
+                    <form action="{{url_for('take_appointment')}}" method="POST">
+                        <div class="form-group">
+                            <label for="patient_select">Select Patient</label>
+                            <select class="form-select" name="patient_select" id="patient_select" required>
+                                {% for patient in patients %}
+                                <option value="{{ patient.id_patient }}">{{ patient.first_name }} {{ patient.surname }} CF: {{ patient.CF }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group">
+                              <label for="appointment_date">Date</label>
+                              <input type="date" class="form-control" name="appointment_date" id="appointment_date" min="{{ current_date }}" required>
+                            </div>                        
+                        </div>
+                        <div class="form-group">
+                            <label for="appointment_time">Time</label>
+                            <input type="time" class="form-control" name="appointment_time" id="appointment_time" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointment_reason">Reason</label>
+                            <input type="text" class="form-control" name="appointment_reason" id="appointment_reason" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Take Appointment</button>
+                    </form>
                 </div>
             </div>
-            <div class="col">
+        </div>
+            <div class="col-sm">
                 <div class="card">
                     <div class="card-header">
                         Followed Patient
@@ -123,7 +155,7 @@
         </div>
 
         <div class="row" style="padding-top: 10px;">
-            <div class="col">
+            <div class="col-sm">
               <div class="card">
                 <div class="card-header">
                   Notifications
@@ -140,14 +172,14 @@
                   <div class="tab-content">
                     <div class="tab-pane fade show active" id="left-notifications">
                       <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                          <span class="badge bg-info">Info</span> Messaggio di notifica 1 (Sinistra)
-                        </li>
-                        <li class="list-group-item">
-                          <span class="badge bg-success">Successo</span> Messaggio di notifica 2 (Sinistra)
-                        </li>
+                          {% for appointment in appointments %}
+                              <li class="list-group-item">
+                                  <span class="badge bg-info">Patient's appointment</span>
+                                  {{ appointment.patient.first_name }} {{ appointment.patient.surname }} - {{ appointment.time.strftime('%H:%M') }}
+                              </li>
+                          {% endfor %}
                       </ul>
-                    </div>
+                  </div>                  
                     <div class="tab-pane fade" id="right-notifications">
                       <ul class="list-group list-group-flush">
                         <li class="list-group-item">
@@ -162,19 +194,63 @@
                 </div>
               </div>
             </div>
-        </div>
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
-              <div class="toast-header">
-                <img src="..." class="rounded me-2" alt="...">
-                <strong class="me-auto">Bootstrap</strong>
-                <small>11 mins ago</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-              </div>
-              <div class="toast-body">
-                Hello, world! This is a toast message.
-              </div>
+            <div class="col-sm">
+              <div class="card">
+                <div class="card-header">
+                    Appointments List
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">List of appointments</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Patient</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Reason</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr>
+                                <td>{{ appointment.patient.first_name }} {{appointment.patient.surname}} {{appointment.patient.CF}}</td>
+                                <td>{{ appointment.date }}</td>
+                                <td>{{ appointment.time }}</td>
+                                <td>{{ appointment.reason }}</td>
+                                <td>
+                                    <form action="{{url_for('delete_appointment')}}" method="POST">
+                                        <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             </div>
         </div>
     </div>
 {% endblock %}
+
+{% block scripts %}
+    <script>
+        // Funzione per nascondere automaticamente il messaggio flash dopo un certo tempo
+        function hideFlashMessage() {
+            var flashMessage = document.querySelector('.flash-message');
+            if (flashMessage) {
+                setTimeout(function() {
+                    flashMessage.style.display = 'none';
+                }, 5000); // 5000 millisecondi = 5 secondi, puoi personalizzare il tempo di visualizzazione
+            }
+        }
+
+        // Chiamata alla funzione quando la pagina è completamente caricata
+        window.addEventListener('DOMContentLoaded', function() {
+            hideFlashMessage();
+        });
+    </script>
+{% endblock %}
+
