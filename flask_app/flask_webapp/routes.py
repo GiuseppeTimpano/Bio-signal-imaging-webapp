@@ -195,9 +195,10 @@ def view_selected_image(patient):
         dicom_id = dicom.dicom_id
         return render_template('doctor_templates/view_image.html', image_data = image_selected, patient=patient, dicom_id=dicom_id)
 
-# overlay countor with anatomical image
-def make_countor(anatomical_image_b64, countor_b64):
-    return 
+@app.route("/dashboard/selected_image/<int:dicom>/<int:patient>")
+def redirect_view_selected_image(dicom, patient):
+    dicom = Dicom_Image.query.filter_by(dicom_id=dicom).first()
+    return render_template('doctor_templates/view_image.html', image_data = dicom.base64_data, patient=patient, dicom_id=dicom.dicom_id)
 
 @app.route("/dashboard/dicom_analyzer")
 def image_analyzer():

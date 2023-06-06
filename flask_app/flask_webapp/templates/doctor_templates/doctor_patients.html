@@ -17,7 +17,7 @@
 
     <!-- Elenco pazienti -->
     <div class="row mt-4">
-      <div class="col-md-4">
+      <div class="col-md-4"> <!-- Aggiunta della classe mx-auto per centrare la colonna -->
         <div class="list-group" id="patient-list">
           {% for patient in patients %}
             <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient{{ patient.id_patient }}">
@@ -34,7 +34,7 @@
               <p>
                 {% for medical_record in patient.mr %}
                   <strong>Medical Record ID:</strong> {{ medical_record.record_id }}<br>
-                  <strong>Treatment:</strong> {{ medical_record.therapy }}<br>
+                  <strong>Treatment:</strong> {{ medical_record.terapy }}<br>
                   <hr>
                 {% endfor %}
               </p>
