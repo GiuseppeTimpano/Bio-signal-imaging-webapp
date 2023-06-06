@@ -37,7 +37,7 @@ class Appointment(db.Model):
     date = db.Column(db.Date, nullable=False)
     time = db.Column(db.Time, nullable=False)
     reason = db.Column(db.Text, nullable=False)
-    doctor = db.relationship('HealthcareWorker', foreign_keys=[doctor_id], backref='doctor_appointments')
+    doctor = db.relationship('HealthcareWorker', foreign_keys=[doctor_id], backref='doctor_appointments', overlaps="doctor")
     patient = db.relationship('Patient', foreign_keys=[patient_id], backref='patient_appointments')
 
 

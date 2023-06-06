@@ -51,14 +51,14 @@ def login():
                 return redirect(url_for('home'))
         elif healthcare_worker and (patient and admin) is None:
             role=healthcare_worker
-            if bcrypt.check_password_hash(role.password, password):
+            if session['name']=='doctor' and role.is_active and bcrypt.check_password_hash(role.password, password):
                 flash('You have been logged in!', 'success')
                 session['name'] = role.role
                 session['utent'] = healthcare_worker.name
                 session['ID'] = healthcare_worker.id_worker
                 return redirect(url_for('home'))
         else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
+            flash('Login Unsuccessful. Please check username and password! Maybe', 'danger')
     return render_template('init_page/login.html', title='Login', form=form, name=session.get('name'), utent=session.get('utent'))
 
 @app.route("/signup.html", methods=['GET', 'POST'])
@@ -201,17 +201,18 @@ def make_countor(anatomical_image_b64, countor_b64):
 def image_analyzer():
     return render_template("doctor_templates/image_analyzer.html", page="analyzer")
 
-@app.route("/add_annotation/<patient>/<dicom>",  methods=['GET', 'POST'])
+@app.route("/dashboard/add_annotation/<int:patient>/<int:dicom>",  methods=['GET', 'POST'])
 def add_medical_record(patient, dicom):
-    medical_record = MedicalRecord(record_id=random.randint(1000, 5382264),
-                                   terapy=request.form["userInput"], 
-                                   pat_id=patient)
-    db.session.add(medical_record)
-    dicom = Dicom_Image.query.filter_by(dicom_id=dicom).first()
-    medical_record.dicoms.append(dicom)
-    db.session.commit()
-    flash('Annotazione inserita con successo!', 'success')
-    return redirect(url_for('dicom_visualizer'))
+    if request.method=='POST':
+        medical_record = MedicalRecord(record_id=random.randint(1000, 5382264),
+                                    terapy=request.form["userInput"], 
+                                    pat_id=patient)
+        db.session.add(medical_record)
+        dicom = Dicom_Image.query.filter_by(dicom_id=dicom).first()
+        medical_record.dicoms.append(dicom)
+        db.session.commit()
+        flash('Annotazione inserita con successo!', 'success')
+        return redirect(url_for('dicom_visualizer'))
 
 @app.route("/dashboard/add_image", methods=['GET', 'POST'])
 def add_image():
