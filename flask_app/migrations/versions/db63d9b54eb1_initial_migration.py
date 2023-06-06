@@ -1,8 +1,8 @@
-"""empty message
+"""initial migration
 
-Revision ID: f41107613457
+Revision ID: db63d9b54eb1
 Revises: 
-Create Date: 2023-06-03 17:29:53.483666
+Create Date: 2023-06-06 12:56:32.817592
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f41107613457'
+revision = 'db63d9b54eb1'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -70,11 +70,23 @@ def upgrade():
     sa.Column('address', sa.Text(), nullable=True),
     sa.Column('city', sa.String(), nullable=True),
     sa.Column('CF', sa.Text(), nullable=True),
+    sa.Column('registered', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id_patient'),
     sa.UniqueConstraint('CF'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('id_patient'),
     sa.UniqueConstraint('password_patient')
+    )
+    op.create_table('appointment',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('doctor_id', sa.Integer(), nullable=False),
+    sa.Column('patient_id', sa.Integer(), nullable=False),
+    sa.Column('date', sa.Date(), nullable=False),
+    sa.Column('time', sa.Time(), nullable=False),
+    sa.Column('reason', sa.Text(), nullable=False),
+    sa.ForeignKeyConstraint(['doctor_id'], ['healthcareworker.id_worker'], ),
+    sa.ForeignKeyConstraint(['patient_id'], ['patient.id_patient'], ),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('dicom',
     sa.Column('dicom_id', sa.Integer(), nullable=False),
@@ -134,6 +146,7 @@ def downgrade():
     op.drop_table('patient_group')
     op.drop_table('hospedalization')
     op.drop_table('dicom')
+    op.drop_table('appointment')
     op.drop_table('patient')
     op.drop_table('healthcareworker')
     op.drop_table('department')

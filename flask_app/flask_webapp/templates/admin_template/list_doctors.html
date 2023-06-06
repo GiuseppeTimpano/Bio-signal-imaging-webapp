@@ -5,8 +5,8 @@
         text-align: center;
     }
 </style>
-<div class="container">
-    <h2>Doctor in db</h2>
+<div class="container" style="margin-top: 10px;">
+    <h2>Doctor sign-up</h2>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -39,7 +39,7 @@
                     {% endif %}
                     {% if doctor.dep_rif %}
                         <form method="POST" action="{{url_for('assign_doctor_department', doctor_id=doctor.id_worker)}}">
-                            <select class="form-select" name="department" id="department_{{ doctor.id_worker }}" data-doctor-id="{{ doctor.id_worker }}" onchange="toggleConfirmButton(this)">
+                            <select class="form-select" name="department" id="department_{{ doctor.id_worker }}" onchange="toggleConfirmButton('{{ doctor.id_worker }}')">
                                 <option value="">Change department for this doctor</option>
                                 {% for department in departments %}
                                     <option value="{{ department.department_id }}">{{ department.department_name }}</option>
@@ -53,14 +53,14 @@
                 <td>
                     {% if doctor.is_active == True and doctor.dep_rif==None %}
                     <form method="POST" action="{{url_for('assign_doctor_department', doctor_id=doctor.id_worker)}}">
-                        <select class="form-select" name="department" id="department" onchange="toggleConfirmButton(this)">
+                        <select class="form-select" name="department" id="department_{{ doctor.id_worker }}" onchange="toggleConfirmButton('{{ doctor.id_worker }}')">
                             <option value="">Select department for this doctor</option>
                             {% for department in departments %}
                             <option value="{{department.department_id}}">{{department.department_name}}</option>
                             {% endfor %}
                             <!-- Aggiungi altre opzioni di dipartimento qui -->
                         </select>
-                        <button type="submit" class="btn btn-success btn-sm" id="confirmButton" disabled>Assign Department</button>
+                        <button type="submit" class="btn btn-success btn-sm" id="confirmButton_{{ doctor.id_worker }}" disabled>Assign Department</button>
                     </form>
                     {% else %}
                         {% set department = departments|selectattr('department_id', 'equalto', doctor.dep_rif)|first %}
@@ -78,11 +78,11 @@
 </div>
 
 <script>
-    function toggleConfirmButton(selectElement) {
-    var doctorId = selectElement.dataset.doctorId;
-    var confirmButton = document.getElementById('confirmButton_' + doctorId);
-    confirmButton.disabled = (selectElement.value === '');
-}
+    function toggleConfirmButton(doctorId) {
+        var selectElement = document.getElementById('department_' + doctorId);
+        var confirmButton = document.getElementById('confirmButton_' + doctorId);
+        confirmButton.disabled = (selectElement.value === '');
+    }
 </script>
 
 {% endblock %}

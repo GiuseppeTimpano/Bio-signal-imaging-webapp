@@ -8,8 +8,8 @@
     <!-- Barra di ricerca -->
     <div class="row">
       <div class="col-md-6">
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Cerca paziente" aria-label="Cerca">
+        <form class="d-flex" id="search-form">
+          <input class="form-control me-2" type="search" placeholder="Cerca per codice fiscale" aria-label="Cerca" id="search-input">
           <button class="btn btn-primary" type="submit">Search</button>
         </form>
       </div>
@@ -20,51 +20,51 @@
       <div class="col-md-4">
         <div class="list-group" id="patient-list">
           {% for patient in patients %}
-            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient1">
-              Paziente 1
+            <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient{{ patient.id_patient }}">
+              {{ patient.first_name }} {{ patient.surname }} {{patient.CF}}
             </a>
           {% endfor %}
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient2">
-            Paziente 2
-          </a>
-          <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient3">
-            Paziente 3
-          </a>
         </div>
       </div>
       <div class="col-md-8">
         <div class="tab-content" id="patient-content">
-          <div class="tab-pane fade" id="patient1">
-            <h4>Paziente 1</h4>
-            <p>
-              Descrizione dettagliata del Paziente 1.
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Sed tempus est id enim condimentum consequat.
-              Nullam nec felis sit amet odio tincidunt gravida id sed metus.
-              Nulla eget libero mi.
-            </p>
-          </div>
-          <div class="tab-pane fade" id="patient2">
-            <h4>Paziente 2</h4>
-            <p>
-              Descrizione dettagliata del Paziente 2.
-              Ut auctor euismod augue, sed tincidunt quam auctor vitae.
-              Maecenas eu malesuada mauris, in tristique eros.
-              Aliquam consectetur, ligula ac ullamcorper vulputate, justo diam vulputate ante, vitae gravida urna nisi id felis.
-            </p>
-          </div>
-          <div class="tab-pane fade" id="patient3">
-            <h4>Paziente 3</h4>
-            <p>
-              Descrizione dettagliata del Paziente 3.
-              Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-              Etiam sed feugiat urna, eget tristique massa.
-              Sed semper massa eu velit hendrerit, ut dapibus lacus dapibus.
-              Sed eu aliquet nisi, ac dignissim mauris.
-            </p>
-          </div>
+          {% for patient in patients %}
+            <div class="tab-pane fade" id="patient{{ patient.id_patient }}">
+              <h4>{{ patient.first_name }} {{ patient.surname }}</h4>
+              <p>
+                {% for medical_record in patient.mr %}
+                  <strong>Medical Record ID:</strong> {{ medical_record.record_id }}<br>
+                  <strong>Treatment:</strong> {{ medical_record.therapy }}<br>
+                  <hr>
+                {% endfor %}
+              </p>
+            </div>
+          {% endfor %}
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    document.getElementById('search-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission
+
+      // Get the search input value
+      var searchInput = document.getElementById('search-input').value.toLowerCase();
+
+      // Iterate through patient list items
+      var patientListItems = document.querySelectorAll('#patient-list .list-group-item');
+      patientListItems.forEach(function(item) {
+        var patientCf = item.dataset.cf.toLowerCase();
+
+        // Check if the patient CF matches the search input
+        if (patientCf.includes(searchInput)) {
+          item.classList.add('active'); // Select the patient
+        } else {
+          item.classList.remove('active'); // Deselect other patients
+        }
+      });
+    });
+  </script>
+</body>
 {% endblock %}

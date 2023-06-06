@@ -51,14 +51,16 @@ def login():
                 return redirect(url_for('home'))
         elif healthcare_worker and (patient and admin) is None:
             role=healthcare_worker
-            if session['name']=='doctor' and role.is_active and bcrypt.check_password_hash(role.password, password):
+            if role.role=='doctor' and role.is_active and bcrypt.check_password_hash(role.password, password):
                 flash('You have been logged in!', 'success')
                 session['name'] = role.role
                 session['utent'] = healthcare_worker.name
                 session['ID'] = healthcare_worker.id_worker
                 return redirect(url_for('home'))
+            else:
+                flash('Your account must be activate by admin!', 'danger')
         else:
-            flash('Login Unsuccessful. Please check username and password! Maybe', 'danger')
+            flash('Login Unsuccessful. Please check username and password!', 'danger')
     return render_template('init_page/login.html', title='Login', form=form, name=session.get('name'), utent=session.get('utent'))
 
 @app.route("/signup.html", methods=['GET', 'POST'])
@@ -161,8 +163,8 @@ def dicom_visualizer():
 @app.route("/dashboard/patient")
 def doctor_patient():
     doctor = session.get('name')
-    patient = Patient.query.filter_by()
-    return render_template("doctor_templates/doctor_patients.html", page='patient')
+    patients = Patient.query.all()
+    return render_template("doctor_templates/doctor_patients.html", page='patient', patients=patients)
 
 @app.route("/dashboard/dicom_image", methods=['GET', 'POST'])
 def visualize_image():
