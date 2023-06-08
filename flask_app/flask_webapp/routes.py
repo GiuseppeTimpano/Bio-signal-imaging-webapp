@@ -106,7 +106,8 @@ def signup():
                                       surname = form.surname.data,
                                       email = form.email.data,
                                       CF = form.CF.data, 
-                                      role='healthcareworker')
+                                      role='healthcareworker',
+                                      birth_date=form.birth_date.data)
             if HealthcareWorker.query.filter_by(id_worker=healthcareworkwer.id_worker).first():
                 flash("Account already exists!", "error")
             else:
@@ -351,4 +352,11 @@ def delete_appointment():
 
     return redirect(url_for('dicom_visualizer'))
 
-    
+@app.route("/confirm-role/<int:worker_id>", methods=['POST'])
+def confirm_role(worker_id):
+    worker = HealthcareWorker.query.get(worker_id)
+    role = request.form.get('role')
+    worker.hw_role_not_doctor = role
+    db.session.commit()
+    flash('Role confirmed successfully')
+    return redirect(url_for('admin_page'))

@@ -1,7 +1,7 @@
 {% extends "admin_template/layout_admin.html" %}
 {%block visualizer%}
 <div class="container">
-    <h2>Doctor in db</h2>
+    <h2>HealthcareWorker in db</h2>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -9,7 +9,8 @@
                 <th>Surname</th>
                 <th>email</th>
                 <th>Birth Date</th>
-                <th>Modify hw informations</th>
+                <th>Role</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +20,15 @@
                     <td>{{hw.surname}}</td>
                     <td>{{hw.email}}</td>
                     <td>{{hw.birth_date}}</td>
+                    <td>
+                        {% if hw.hw_role_not_doctor %}
+                            {{ hw.hw_role_not_doctor }}
+                        {% else %}
+                        <form method="POST" action="/confirm-role/{{ hw.id_worker }}">
+                            <input type="text" name="role" class="form-control" placeholder="Enter role">
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                        </form>
+                        {% endif %}
                 </tr>
             {% endfor %}
         </tbody>

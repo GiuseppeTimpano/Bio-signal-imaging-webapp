@@ -133,9 +133,10 @@
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
+          {% if session['name']=='doctor' %}
           <li class="nav-item">
             <a href="{{ url_for('dicom_visualizer') }}" class="
-            {% if page == 'visualizer' %}
+            {% if page == 'visualizer'%}
             nav-link active
             {% else %}
               nav-link text-white
@@ -145,9 +146,11 @@
               Home
             </a>
           </li>
+          {% endif %}
+          {% if session['name']=='doctor' %}
           <li>
             <a href="{{ url_for('doctor_patient') }}" class="
-              {% if page == 'patient' %}
+              {% if page == 'patient'%}
                 nav-link active
               {% else %}
                 nav-link text-white
@@ -157,9 +160,11 @@
               Patient
             </a>
           </li>
+          {% endif %}
+          {% if session['name']=='healthcareworker' %}
           <li>
             <a href="{{ url_for('add_image') }}" class="
-              {% if page == 'add' %}
+              {% if page == 'add'%}
                 nav-link active
               {% else %}
                 nav-link text-white
@@ -172,9 +177,10 @@
               Add Image
             </a>
           </li>
+          {%endif%}
         <li>
           <a href="{{ url_for('visualize_image') }}" class="
-            {% if page == 'visualize_image' %}
+            {% if page == 'visualize_image' and session['name']=='doctor'%}
               nav-link active
             {% else %}
               nav-link text-white
