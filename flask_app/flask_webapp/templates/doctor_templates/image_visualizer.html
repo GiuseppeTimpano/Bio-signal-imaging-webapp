@@ -42,7 +42,11 @@
                     <label for="images">Images for selected patient</label>
                     <select class="form-control" id="images" name="images" multiple required>
                         {% for image in images %}
-                        <option value="{{ image.base64_data }}">{{ image.filename }}</option>
+                        <option value="{{ image.base64_data }}">{{ image.filename }}
+                            {% if not image.notified %}
+                            - New Acquisition for this patient
+                            {% endif %}
+                        </option>
                         {% endfor %}
                     </select>
                     <input type="hidden" name="image_data" id="image_data">

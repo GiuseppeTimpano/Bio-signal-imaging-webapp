@@ -3,11 +3,12 @@ from flask_webapp import app
 from flask import session
 from flask_webapp.forms import LoginForm, SignUpForm, DepartmentForm
 from flask_webapp import db
-from flask_webapp.models import Department, MedicalRecord, HealthcareWorker, Admin, Appointment
+from flask_webapp.models import Department, MedicalRecord, HealthcareWorker, Admin, Appointment, patient_group
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_webapp import bcrypt
 from flask_webapp.models import Patient, Dicom_Image
 from werkzeug.utils import secure_filename
+from sqlalchemy import and_
 import os
 import random
 from datetime import datetime, date
@@ -147,10 +148,17 @@ def logout():
 
 @app.route("/dashboard")
 def dicom_visualizer():
-    patients = Patient.query.all()
+    #patients = Patient.query.all()
+    patients = Patient.query.join(patient_group, Patient.id_patient == patient_group.c.patient_id).filter(patient_group.c.doctor == session.get('ID')).all()
 
-    appointments = Appointment.query.filter_by(date=date.today()).all()
-    all_appointment = Appointment.query.all()
+    #appointments = Appointment.query.filter_by(date=date.today()).all()
+    appointments = Appointment.query.filter(and_(Appointment.patient_id.in_([patient.id_patient for patient in patients]), Appointment.date == date.today())).all()
+    all_appointment =  Appointment.query.filter(Appointment.patient_id.in_([patient.id_patient for patient in patients])).all()
+
+    images = Dicom_Image.query.filter(
+    Dicom_Image.patient_id.in_([patient.id_patient for patient in patients]),
+    Dicom_Image.notified == False
+    ).all()
 
     busy_schedule = {}
     for appointment in appointments:
@@ -169,16 +177,17 @@ def dicom_visualizer():
         page='add_image.html'
 
     return render_template('doctor_templates/' + str(page), page="visualizer", patients=patients, appointments=appointments, busy_schedule=busy_schedule, current_date=current_date, 
-                           all_appointment=all_appointment)
+                           all_appointment=all_appointment, images = images)
 
 @app.route("/dashboard/patient")
 def doctor_patient():
     doctor = session.get('name')
-    patients = Patient.query.all()
+    patients = Patient.query.join(patient_group, Patient.id_patient == patient_group.c.patient_id).filter(patient_group.c.doctor == session.get('ID')).all()
     return render_template("doctor_templates/doctor_patients.html", page='patient', patients=patients)
 
 @app.route("/dashboard/dicom_image", methods=['GET', 'POST'])
 def visualize_image():
+    patients = Patient.query.join(patient_group, Patient.id_patient == patient_group.c.patient_id).filter(patient_group.c.doctor == session.get('ID')).all()
     if request.method=='POST':
         #Patient data from html form
         patient_CF = request.form['CF']
@@ -186,8 +195,8 @@ def visualize_image():
         patient_surname = request.form['surname']
         image_type = request.form['type']
         patient = Patient.query.filter_by(CF=patient_CF).first()
-        if patient is None:
-            flash('No patient in database')
+        if patient is None or patient not in patients:
+            flash('No patient in database or patient followed by this account!', 'danger')
         else:
             patient_id = patient.id_patient
             #Execute query
@@ -203,10 +212,11 @@ def view_selected_image(patient):
         flash('No image in selected')
     else:
         dicom = Dicom_Image.query.filter_by(base64_data=image_selected).first()
+        dicom.notified=True
         dicom_id = dicom.dicom_id
         return render_template('doctor_templates/view_image.html', image_data = image_selected, patient=patient, dicom_id=dicom_id)
 
-@app.route("/dashboard/selected_image/<int:dicom>/<int:patient>")
+@app.route("/dashboard/selected_image/<int:dicom>/<int:patient>", methods=['POST'])
 def redirect_view_selected_image(dicom, patient):
     dicom = Dicom_Image.query.filter_by(dicom_id=dicom).first()
     return render_template('doctor_templates/view_image.html', image_data = dicom.base64_data, patient=patient, dicom_id=dicom.dicom_id)

@@ -1,8 +1,8 @@
-"""Initial migration
+"""inital_migration
 
-Revision ID: 108a1df47f7b
+Revision ID: cd0f2ecdba83
 Revises: 
-Create Date: 2023-06-10 12:31:44.919929
+Create Date: 2023-06-10 19:36:03.759749
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '108a1df47f7b'
+revision = 'cd0f2ecdba83'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -96,6 +96,9 @@ def upgrade():
     sa.Column('image_dimension', sa.Integer(), nullable=False),
     sa.Column('base64_data', sa.Text(), nullable=False),
     sa.Column('patient_id', sa.Integer(), nullable=False),
+    sa.Column('notified', sa.Boolean(), nullable=True),
+    sa.Column('healthcareworker_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['healthcareworker_id'], ['healthcareworker.id_worker'], ),
     sa.ForeignKeyConstraint(['patient_id'], ['patient.id_patient'], ),
     sa.PrimaryKeyConstraint('dicom_id'),
     sa.UniqueConstraint('dicom_id')
@@ -130,11 +133,10 @@ def upgrade():
     sa.UniqueConstraint('record_id')
     )
     op.create_table('medical_dicom',
-    sa.Column('id_dicom', sa.Integer(), nullable=False),
+    sa.Column('id_dicom', sa.Integer(), nullable=True),
     sa.Column('medical_record_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['id_dicom'], ['dicom.dicom_id'], ),
-    sa.ForeignKeyConstraint(['medical_record_id'], ['medicalrecord.record_id'], ),
-    sa.PrimaryKeyConstraint('id_dicom')
+    sa.ForeignKeyConstraint(['medical_record_id'], ['medicalrecord.record_id'], )
     )
     # ### end Alembic commands ###
 

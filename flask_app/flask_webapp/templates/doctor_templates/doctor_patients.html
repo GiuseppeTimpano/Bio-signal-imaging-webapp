@@ -34,6 +34,9 @@
               <p>
                 {% for medical_record in patient.mr %}
                   <strong>Medical Record ID:</strong> {{ medical_record.record_id }}<br>
+                  {% for dicom in medical_record.dicoms %}
+                    <strong>Dicom ID:</strong>{{ dicom.dicom_id }}<br>
+                  {% endfor %}
                   <strong>Treatment:</strong> {{ medical_record.terapy }}<br>
                   <hr>
                 {% endfor %}

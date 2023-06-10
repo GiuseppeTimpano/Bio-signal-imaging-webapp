@@ -30,7 +30,7 @@
                 <label for="patient">Patient</label>
                 <select class="form-control" id="patient" name="patient">
                     {% for patient in patients %}
-                    <option value="{{ patient.id_patient }}">{{ patient.first_name }}</option>
+                    <option value="{{ patient.id_patient }}">{{ patient.first_name }} {{patient.surname}} {{patient.CF}}</option>
                     {% endfor %}
                 </select>
             </div>

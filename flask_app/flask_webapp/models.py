@@ -58,8 +58,8 @@ class Department(db.Model):
     head_of_department = db.relationship('HealthcareWorker', backref='department_head', uselist=False, foreign_keys=head_of_department_id)
 
 medicalrecord_has_dicom = db.Table('medical_dicom',
-                                   db.Column('id_dicom', db.Integer, db.ForeignKey('dicom.dicom_id'), primary_key=True),
-                                   db.Column('medical_record_id', db.Integer, db.ForeignKey('medicalrecord.record_id', primary_key=True)))
+                                   db.Column('id_dicom', db.Integer, db.ForeignKey('dicom.dicom_id')),
+                                   db.Column('medical_record_id', db.Integer, db.ForeignKey('medicalrecord.record_id')))
 
 
 class MedicalRecord(db.Model):

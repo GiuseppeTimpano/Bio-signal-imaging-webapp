@@ -179,17 +179,27 @@
                               </li>
                           {% endfor %}
                       </ul>
-                  </div>                  
+                  </div>
+                  {% if images %}                  
                     <div class="tab-pane fade" id="right-notifications">
                       <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                          <span class="badge bg-warning text-dark">Avviso</span> Messaggio di notifica 3 (Destra)
-                        </li>
-                        <li class="list-group-item">
-                          <span class="badge bg-danger">Errore</span> Messaggio di notifica 4 (Destra)
+                          {% for patient in patients %}
+                          {% for image in patient.images %}
+                           {% if not image.notified %}
+                            <span class="badge bg-warning text-dark">
+                              Image Acquisition
+                            </span>
+                            You have to visualize medical image for this patient: 
+                            <strong>{{patient.first_name}} {{patient.surname}} {{patient.CF}}</strong>
+                            dall'operatore n°{{image.healthcareworker.id_worker}} - {{image.healthcareworker.hw_role_not_doctor}}
+                            {% endif %}
+                          {% endfor %}
+                          {% endfor %}
                         </li>
                       </ul>
                     </div>
+                    {% endif %}
                   </div>
                 </div>
               </div>
