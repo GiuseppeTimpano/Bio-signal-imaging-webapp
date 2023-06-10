@@ -29,6 +29,14 @@
                             <button type="submit" class="btn btn-primary">Confirm</button>
                         </form>
                         {% endif %}
+                    </td>
+                    <td>
+                        {% if not hw.is_active %}
+                        <a href="{{ url_for('activate_account_hw', worker_id=hw.id_worker) }}" class="btn btn-primary">Active doctor account</a>
+                        {% else %}
+                        Account activated
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

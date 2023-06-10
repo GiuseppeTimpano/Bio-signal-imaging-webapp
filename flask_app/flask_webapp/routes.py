@@ -51,12 +51,16 @@ def login():
                 return redirect(url_for('home'))
         elif healthcare_worker and (patient and admin) is None:
             role=healthcare_worker
-            if role.role=='doctor' and role.is_active and bcrypt.check_password_hash(role.password, password):
-                flash('You have been logged in!', 'success')
-                session['name'] = role.role
-                session['utent'] = healthcare_worker.name
-                session['ID'] = healthcare_worker.id_worker
-                return redirect(url_for('home'))
+            print(role.is_active)
+            if role.is_active:
+                if bcrypt.check_password_hash(role.password, password):
+                    flash('You have been logged in!', 'success')
+                    session['name'] = role.role
+                    session['utent'] = healthcare_worker.name
+                    session['ID'] = healthcare_worker.id_worker
+                    return redirect(url_for('home'))
+                else:
+                    flash('Not corret credential! Plaese, try again', 'danger')
             else:
                 flash('Your account must be activate by admin!', 'danger')
         else:
@@ -276,7 +280,17 @@ def list_workers():
 def activate_account(doctor_id):
     doctor = HealthcareWorker.query.filter_by(id_worker=doctor_id).first()
     doctor.is_active=True
+    db.session.commit()
+    flash('Account activated successfully!')
     return redirect(url_for('list_doctors'))
+
+@app.route("/admin/active_account/<int:worker_id>")
+def activate_account_hw(worker_id):
+    hw = HealthcareWorker.query.filter_by(id_worker=worker_id).first()
+    hw.is_active=True
+    db.session.commit()
+    flash('Account activated successfully!')
+    return redirect(url_for('list_workers'))
 
 @app.route("/admin/assign_doctor_to_dep/<int:doctor_id>", methods=['POST'])
 def assign_doctor_department(doctor_id):

@@ -55,6 +55,14 @@
                       <li><a class="dropdown-item" href="#">Artificial Intelligence</a></li>
                     </ul>
                   </div>
+                  </li>
+                {% elif session.get('name')=='healthcareworker' %}
+                  <li><div href="#" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Operations HealthcareWorker
+                    </a>
+                  </div>
+                  </li>
                 {% endif %}
                   <li class="nav-item"><a class="nav-link" href="https://web.unicz.it/it/" class="nav-link px-2 link-secondary">University web site</a></li>
                   <li class="nav-item"><a class="nav-link" href="https://github.com/GiuseppeTimpano/Bio-signal-imaging-webapp" class="nav-link px-2 link-secondary">GitHub repository</a></li>
