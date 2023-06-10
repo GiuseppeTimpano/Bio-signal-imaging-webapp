@@ -113,4 +113,7 @@ class Dicom_Image(db.Model):
     image_dimension = db.Column(db.Integer, nullable=False)
     base64_data = db.Column(db.Text, nullable=False)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id_patient'), nullable=False)
+    notified = db.Column(db.Boolean, default=False)
+    healthcareworker_id = db.Column(db.Integer, db.ForeignKey('healthcareworker.id_worker'), nullable=True)
+    healthcareworker = db.relationship('HealthcareWorker', backref='added_images', lazy=True)
 

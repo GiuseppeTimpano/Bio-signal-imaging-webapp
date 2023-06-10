@@ -162,7 +162,13 @@ def dicom_visualizer():
     
     current_date = datetime.now().strftime('%Y-%m-%d')
 
-    return render_template('doctor_templates/dash_home.html', page="visualizer", patients=patients, appointments=appointments, busy_schedule=busy_schedule, current_date=current_date, 
+    page=None
+    if session.get('name')=='doctor':
+        page='dash_home.html'
+    else:
+        page='add_image.html'
+
+    return render_template('doctor_templates/' + str(page), page="visualizer", patients=patients, appointments=appointments, busy_schedule=busy_schedule, current_date=current_date, 
                            all_appointment=all_appointment)
 
 @app.route("/dashboard/patient")
@@ -222,7 +228,7 @@ def add_medical_record(patient, dicom):
         flash('Annotazione inserita con successo!', 'success')
         return redirect(url_for('dicom_visualizer'))
 
-@app.route("/dashboard/add_image", methods=['GET', 'POST'])
+@app.route("/dashboard/add_image/", methods=['GET', 'POST'])
 def add_image():
     if request.method=='POST':
         name = request.form['name']
@@ -234,13 +240,16 @@ def add_image():
             flash('All fields are required.')
             return redirect(url_for('add_image'))
         
+        hw = HealthcareWorker.query.filter_by(id_worker=session.get('ID')).first()
+        
         for file in files:
             data = file.read()
             filename = secure_filename(file.filename)
             base64_data = base64.b64encode(data).decode('utf-8')
             dicom = Dicom_Image(dicom_id=random.randint(1000, 1876364), filename=file.filename,
                                 patient_id=patient_id, date=date, 
-                                base64_data=base64_data, image_dimension=2)
+                                base64_data=base64_data, image_dimension=2, 
+                                healthcareworker=hw)
             db.session.add(dicom)
             db.session.commit()
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -374,3 +383,7 @@ def confirm_role(worker_id):
     db.session.commit()
     flash('Role confirmed successfully')
     return redirect(url_for('admin_page'))
+
+@app.route("/healthcareworker/images_patients")
+def all_images():
+    return render_template('doctor_templates/all_images.html', page='visualize_all_images')

@@ -123,14 +123,18 @@
 
     <main class="d-flex flex-nowrap">
       <h1 class="visually-hidden">Sidebars examples</h1>
-
       <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
           <div class="row">
-            <div class="col-md-4 logo-side"><img src="https://icon-library.com/images/health-icon-png/health-icon-png-24.jpg" width="40" height="40"></a></div>
-            <div class="col-md-4 logo-side2"><span class="fs-4">Doctor Dashboard</span></div>
+            <div class="col-md-4 logo-side" style="align-items: center;"><img src="https://icon-library.com/images/health-icon-png/health-icon-png-24.jpg" width="60" height="60"></a></div>
+            <div class="col-md-4 logo-side2" style="align-items: center;"><span class="fs-5">
+              {% if session.get('name')=='doctor' %}
+              Doctor Dashboard
+              {% elif session.get('name')=='healthcareworker' %}
+              HealthcareWorker Dashboard
+              {% endif %}
+            </span></div>
           </div>
-        </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
           {% if session['name']=='doctor' %}
@@ -180,7 +184,7 @@
           {%endif%}
         <li>
           <a href="{{ url_for('visualize_image') }}" class="
-            {% if page == 'visualize_image' and session['name']=='doctor'%}
+            {% if page == 'visualize_image'%}
               nav-link active
             {% else %}
               nav-link text-white
@@ -194,53 +198,22 @@
           </a>
         </li>
         <li>
-            <a href="{{ url_for('image_analyzer') }}" class="
-                {% if page == 'analyzer' %}
-                  nav-link active
-                {% else %}
-                  nav-link text-white
-                {% endif %}
-            ">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-heart" viewBox="0 0 16 16">
-              <path d="M10.058.501a.501.501 0 0 0-.5-.501h-2.98c-.276 0-.5.225-.5.501A.499.499 0 0 1 5.582 1a.497.497 0 0 0-.497.497V2a.5.5 0 0 0 .5.5h4.968a.5.5 0 0 0 .5-.5v-.503A.497.497 0 0 0 10.555 1a.499.499 0 0 1-.497-.499Z"/>
-              <path d="M3.605 2a.5.5 0 0 0-.5.5v12a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-12a.5.5 0 0 0-.5-.5h-.5a.5.5 0 0 1 0-1h.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5h-9a1.5 1.5 0 0 1-1.5-1.5v-12a1.5 1.5 0 0 1 1.5-1.5h.5a.5.5 0 0 1 0 1h-.5Z"/>
-              <path d="M8.068 6.482c1.656-1.673 5.795 1.254 0 5.018-5.795-3.764-1.656-6.69 0-5.018Z"/>
-            </svg>
-            Image analyzer
-          </a>
-        </li>
-        <li>
-          <a href="{{ url_for('biosignals_visualizer') }}" class="
-              {% if page == 'visualize_biosignals' %}
-                nav-link active
-              {% else %}
-                nav-link text-white
-              {% endif %}
+          {% if session.get('name')=='healthcareworker' %}
+          <a href="{{ url_for('all_images') }}" class="
+            {% if page == 'visualize_all_images'%}
+              nav-link active
+            {% else %}
+              nav-link text-white
+            {% endif %}
           ">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-data" viewBox="0 0 16 16">
-                <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5h3Z"/>
-                <path d="M3 2.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 0 0-1h-.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1H12a.5.5 0 0 0 0 1h.5a.5.5 0 0 1 .5.5v12a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-12Z"/>
-                <path d="M10 7a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7Zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1Zm4-3a1 1 0 0 0-1 1v3a1 1 0 1 0 2 0V9a1 1 0 0 0-1-1Z"/>
-              </svg>
-              Biosignals to check
-            </a>
-        </li>
-        <li>
-        <li>
-              <a href="{{ url_for('biosignals_analyzer') }}" class="
-                  {% if page == 'analyze_biosignals' %}
-                    nav-link active
-                  {% else %}
-                    nav-link text-white
-                  {% endif %}
-              ">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-pulse-fill" viewBox="0 0 16 16">
-                <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5Z"/>
-                <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM9.98 5.356 11.372 10h.128a.5.5 0 0 1 0 1H11a.5.5 0 0 1-.479-.356l-.94-3.135-1.092 5.096a.5.5 0 0 1-.968.039L6.383 8.85l-.936 1.873A.5.5 0 0 1 5 11h-.5a.5.5 0 0 1 0-1h.191l1.362-2.724a.5.5 0 0 1 .926.08l.94 3.135 1.092-5.096a.5.5 0 0 1 .968-.039Z"/>
-              </svg>
-            Analyze biosignals
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-images" viewBox="0 0 16 16">
+              <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+              <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2zM14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1zM2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1h-10z"/>
+            </svg>
+            Image for each patient
           </a>
         </li>
+        {% endif %}
         </ul>
         <hr>
         <div class="dropdown">
