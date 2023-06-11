@@ -188,7 +188,8 @@ def doctor_patient():
 @app.route("/dashboard/dicom_image", methods=['GET', 'POST'])
 def visualize_image():
     patients = Patient.query.join(patient_group, Patient.id_patient == patient_group.c.patient_id).filter(patient_group.c.doctor == session.get('ID')).all()
-    if request.method=='POST':
+    if request.method=='POST' and (not request.form.get('MedicalRecordID') and not request.form.get('ImageID')
+                                       and not request.form.get('cf_id')):
         #Patient data from html form
         patient_CF = request.form['CF']
         patient_name = request.form['name']
@@ -202,6 +203,17 @@ def visualize_image():
             #Execute query
             images = Dicom_Image.query.filter_by(patient_id=patient_id).all()
             return render_template("doctor_templates/image_visualizer.html", page="visualize_image", images=images, patient=patient)
+    elif request.method=='POST' and (not request.form.get('CF') and not request.form.get('name')
+                                    and not request.form.get('surname') and not request.form.get('type')):
+        medicalID = request.form['MedicalRecordID']
+        imageID = request.form['ImageID']
+        patient_CF = request.form['cf_id']
+        patient = Patient.query.filter_by(CF=patient_CF)
+        if not imageID and medicalID:
+            images = MedicalRecord.query.filter_by(record_id=medicalID).first().dicoms if medicalID else []
+        elif imageID:
+            images = Dicom_Image.query.filter_by(dicom_id=imageID).all() if imageID else []
+        return render_template("doctor_templates/image_visualizer.html", page="visualize_image", images=images, patient=patient)
     return render_template("doctor_templates/image_visualizer.html", page="visualize_image")
 
 @app.route("/dashboard/selected_image/<patient>", methods=['GET', 'POST'])

@@ -32,14 +32,18 @@
             <div class="tab-pane fade" id="patient{{ patient.id_patient }}">
               <h4>{{ patient.first_name }} {{ patient.surname }}</h4>
               <p>
-                {% for medical_record in patient.mr %}
-                  <strong>Medical Record ID:</strong> {{ medical_record.record_id }}<br>
-                  {% for dicom in medical_record.dicoms %}
-                    <strong>Dicom ID:</strong>{{ dicom.dicom_id }}<br>
+                {% if patient.mr %}
+                  {% for medical_record in patient.mr %}
+                    <strong>Medical Record ID:</strong> {{ medical_record.record_id }}<br>
+                    {% for dicom in medical_record.dicoms %}
+                      <strong>Dicom ID:</strong>{{ dicom.dicom_id }}<br>
+                    {% endfor %}
+                    <strong>Treatment:</strong> {{ medical_record.terapy }}<br>
+                    <hr>
                   {% endfor %}
-                  <strong>Treatment:</strong> {{ medical_record.terapy }}<br>
-                  <hr>
-                {% endfor %}
+                {% else %}
+                  No medical record for this patient
+                {% endif %}
               </p>
             </div>
           {% endfor %}

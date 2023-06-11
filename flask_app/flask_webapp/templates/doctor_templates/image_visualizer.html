@@ -13,47 +13,92 @@
             {% endif %}
         {% endwith %}
 
-    <div class="container mt-3">
-        <h1>Visualize image</h1>
-        <form method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="CF">Patient CF</label>
-                <input type="text" name="CF" class="form-control" id="CF" required>
+    <div class="row">
+        <div class="col">
+            <div class="container mt-3">
+                <h2>Visualize image by CF</h1>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="CF">Patient CF</label>
+                        <input type="text" name="CF" class="form-control" id="CF" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Patient name</label>
+                        <input type="text" name="name" class="form-control" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="surname">Patient surname</label>
+                        <input type="text" name="surname" class="form-control" id="surname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Image type</label>
+                        <input type="text" name="type" class="form-control" id="type" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Send patient data</button>
+                </form>
+                {% if patient %}
+                    <hr>
+                    <h2>Select an image for {{ patient.first_name }} {{ patient.surname }}</h2>
+                    <form method="POST" action="{{ url_for('view_selected_image', patient=patient.id_patient) }}" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="images">Images for selected patient</label>
+                            <select class="form-control" id="images" name="images" multiple required>
+                                {% for image in images %}
+                                <option value="{{ image.base64_data }}">{{ image.filename }}
+                                    {% if not image.notified %}
+                                    - New Acquisition for this patient
+                                    {% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="image_data" id="image_data">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Select Image</button>
+                    </form>
+                {% endif %}
             </div>
-            <div class="form-group">
-                <label for="name">Patient name</label>
-                <input type="text" name="name" class="form-control" id="name" required>
+        </div>
+        <div class="col">
+            <div class="container mt-3">
+                <h3>Visualize Image by image or medical record ID</h3>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="MedicalRecordID">Medical record ID</label>
+                        <input type="text" name="MedicalRecordID" class="form-control" id="CF" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ImageID">Image ID</label>
+                        <input type="text" name="ImageID" class="form-control" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="cf_id">Patient CF</label>
+                        <input type="text" name="cf_id" class="form-control" id="surname" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Send image's search</button>
+                </form>
+                {% if images %}
+                    <hr>
+                    <h2>Select Image</h2>
+                    <form method="POST" action="{{ url_for('view_selected_image', patient=patient.id_patient) }}" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="images">Images for selected patient</label>
+                            <select class="form-control" id="images" name="images" multiple required>
+                                {% for image in images %}
+                                <option value="{{ image.base64_data }}">{{ image.filename }}
+                                    {% if not image.notified %}
+                                    - New Acquisition for this patient
+                                    {% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="image_data" id="image_data">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Select Image</button>
+                    </form>
+                {% endif %}
             </div>
-            <div class="form-group">
-                <label for="surname">Patient surname</label>
-                <input type="text" name="surname" class="form-control" id="surname" required>
-            </div>
-            <div class="form-group">
-                <label for="type">Image type</label>
-                <input type="text" name="type" class="form-control" id="type" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Send patient data</button>
-        </form>
-        {% if patient %}
-            <hr>
-            <h2>Select an image for {{ patient.first_name }} {{ patient.surname }}</h2>
-            <form method="POST" action="{{ url_for('view_selected_image', patient=patient.id_patient) }}" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="images">Images for selected patient</label>
-                    <select class="form-control" id="images" name="images" multiple required>
-                        {% for image in images %}
-                        <option value="{{ image.base64_data }}">{{ image.filename }}
-                            {% if not image.notified %}
-                            - New Acquisition for this patient
-                            {% endif %}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    <input type="hidden" name="image_data" id="image_data">
-                </div>
-                <button type="submit" class="btn btn-primary">Select Image</button>
-            </form>
-        {% endif %}
+        </div>
     </div>
+
 </body>
 {% endblock %}
