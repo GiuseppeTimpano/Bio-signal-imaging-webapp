@@ -1,0 +1,44 @@
+{% extends "patient_template/layout_patient.html" %}
+{% block visualizer %}
+<body>
+    <h1>Informazioni Paziente</h1>
+  
+    <div class="info-section">
+      <h2>Dettagli Paziente</h2>
+      <div>
+        <p><span class="info-label">ID Paziente:</span> {{ patient.id_patient }}</p>
+        <p><span class="info-label">Nome:</span> {{ patient.first_name }}</p>
+        <p><span class="info-label">Cognome:</span> {{ patient.surname }}</p>
+        <p><span class="info-label">Data di Nascita:</span> {{ patient.birth_date }}</p>
+        <p><span class="info-label">Codice Fiscale:</span> {{ patient.CF }}</p>
+        <p><span class="info-label">Email:</span> {{ patient.email }}</p>
+        <p><span class="info-label">Telefono:</span> {{ patient.phone_number }}</p>
+        <p><span class="info-label">Indirizzo:</span> {{ patient.address }}</p>
+        <p><span class="info-label">Città:</span> {{ patient.city }}</p>
+      </div>
+    </div>
+  
+    <div class="info-section">
+      <h2>Doctor Annotation</h2>
+      <div>
+        {% for annotation in patient.mr %}
+        <p><span class="info-label">Annotation:</span> {{ annotation.terapy }} refered to {{annotation.dicoms[0].exame_name}} obtained in {{annotation.dicoms[0].date}}</p>
+        {% endfor %}
+      </div>
+    </div>
+  
+    <div class="info-section">
+      <h2>Appointment</h2>
+      <div>
+        <ul>
+          {% for annotation in patient.mr %}
+            {% for dicom in annotation.dicoms %}
+            <li>{{dicom.exame_name}} - obtained in {{dicom.date}}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  
+  </body>
+{% endblock %}

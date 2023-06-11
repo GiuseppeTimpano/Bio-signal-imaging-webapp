@@ -64,6 +64,14 @@
                   </div>
                   </li>
                 {% endif %}
+                {% if session.get('name')=='patient' %}
+                  <li><div href="#" class="nav-item dropdown">
+                    <a class="nav-link text-white" href="{{ url_for('patient_page') }}">
+                      Patient's page
+                    </a>
+                  </div>
+                  </li>
+                {% endif %}
                   <li class="nav-item"><a class="nav-link" href="https://web.unicz.it/it/" class="nav-link px-2 link-secondary">University web site</a></li>
                   <li class="nav-item"><a class="nav-link" href="https://github.com/GiuseppeTimpano/Bio-signal-imaging-webapp" class="nav-link px-2 link-secondary">GitHub repository</a></li>
               </ul>

@@ -41,6 +41,7 @@ def login():
                 flash('You have been logged in!', 'success')
                 session['name'] = "patient"
                 session['utent'] = patient.first_name
+                session['ID'] = patient.id_patient
                 return redirect(url_for('home'))
             print(form.password.data)
         elif admin and (patient and healthcare_worker) is None:
@@ -77,15 +78,14 @@ def signup():
         if utent == '1':
             patient = Patient.query.filter_by(CF=form.CF.data).first()
             print(patient.birth_date)
-            if patient and patient.CF==form.CF.data and patient.registered==False:
-                #patient = Patient(id_patient=random.randint(1000, 1057895), password_patient=heashed_password, email=form.email.data, 
-                                #first_name=form.first_name.data, surname=form.surname.data,
-                                #CF=form.CF.data, city=form.city.data,
-                                #birth_date=form.birth_date.data)
+            #if patient already exitst in db
+            if patient and patient.CF==form.CF.data and patient.registered==False and patient.birth_date==form.birth_date.data and patient.first_name==form.first_name.data and patient.surname==form.surname.data:
                 patient.password_patient=heashed_password
                 patient.email=form.email.data
+                patient.city = form.city.data
                 patient.registered=True
                 db.session.commit()
+                flash('You have been sign-up!')
             else: 
                 flash("You are not in db system or you're already sign-up! Please Login")
                 return redirect(url_for('login'))
@@ -133,7 +133,8 @@ def add_patient():
         patient = Patient(id_patient=random.randint(1000, 376436543), 
                         first_name=name, surname=surname,
                         birth_date=date,
-                        CF=CF)
+                        CF=CF, 
+                        registered=False)
         doctor = HealthcareWorker.query.filter_by(id_worker=session.get('ID')).first()
         db.session.add(patient)
         doctor.patient.append(patient)
@@ -423,3 +424,13 @@ def confirm_role(worker_id):
 @app.route("/healthcareworker/images_patients")
 def all_images():
     return render_template('doctor_templates/all_images.html', page='visualize_all_images')
+
+@app.route("/patient/home_page")
+def patient_page():
+    patient = Patient.query.filter_by(id_patient=session.get('ID')).first()
+    print(session.get('ID'))
+    return render_template("patient_template/list_appointment.html", page='appointment', patient=patient)
+
+@app.route("/patient/list_test")
+def list_test():
+    return render_template("patient_template/list_test.html", page='list')
