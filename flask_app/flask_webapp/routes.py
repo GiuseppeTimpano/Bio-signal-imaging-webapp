@@ -210,12 +210,17 @@ def visualize_image():
             medicalID = request.form['MedicalRecordID']
             imageID = request.form['ImageID']
             patient_CF = request.form['cf_id']
-            patient = Patient.query.filter_by(CF=patient_CF)
-            if not imageID and medicalID:
+            patient = Patient.query.filter_by(CF=patient_CF).first()
+            print(patient)
+            if not imageID and medicalID and patient is not None:
                 images = MedicalRecord.query.filter_by(record_id=medicalID).first().dicoms if medicalID else []
-            elif imageID:
+            elif imageID and patient is not None:
                 images = Dicom_Image.query.filter_by(dicom_id=imageID).all() if imageID else []
-            return render_template("doctor_templates/image_visualizer.html", page="visualize_image", images=images, patient=patient)
+            if patient is None:
+                flash("Insert correct CF for patient!", "error")
+                print("flash")
+            else:
+                return render_template("doctor_templates/image_visualizer.html", page="visualize_image", images=images, patient=patient)
     elif session.get('name')=='healthcareworker':
         if request.method=='POST':
             patient_CF = request.form['CF']
@@ -234,7 +239,7 @@ def view_selected_image(patient):
         dicom = Dicom_Image.query.filter_by(base64_data=image_selected).first()
         dicom.notified=True
         dicom_id = dicom.dicom_id
-        return render_template('doctor_templates/view_image.html', image_data = image_selected, patient=patient, dicom_id=dicom_id)
+        return render_template('doctor_templates/view_image.html', image_data = image_selected, patient=patient, dicom_id=dicom_id, page='page_visualizer')
 
 @app.route("/dashboard/selected_image/<int:dicom>/<int:patient>", methods=['POST'])
 def redirect_view_selected_image(dicom, patient):
