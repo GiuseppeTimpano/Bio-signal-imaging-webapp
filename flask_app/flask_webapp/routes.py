@@ -187,33 +187,41 @@ def doctor_patient():
 
 @app.route("/dashboard/dicom_image", methods=['GET', 'POST'])
 def visualize_image():
-    patients = Patient.query.join(patient_group, Patient.id_patient == patient_group.c.patient_id).filter(patient_group.c.doctor == session.get('ID')).all()
-    if request.method=='POST' and (not request.form.get('MedicalRecordID') and not request.form.get('ImageID')
-                                       and not request.form.get('cf_id')):
-        #Patient data from html form
-        patient_CF = request.form['CF']
-        patient_name = request.form['name']
-        patient_surname = request.form['surname']
-        image_type = request.form['type']
-        patient = Patient.query.filter_by(CF=patient_CF).first()
-        if patient is None or patient not in patients:
-            flash('No patient in database or patient followed by this account!', 'danger')
-        else:
-            patient_id = patient.id_patient
-            #Execute query
-            images = Dicom_Image.query.filter_by(patient_id=patient_id).all()
+    if session.get('name')=='doctor':
+        patients = Patient.query.join(patient_group, Patient.id_patient == patient_group.c.patient_id).filter(patient_group.c.doctor == session.get('ID')).all()
+        patients_value = db.session.query(Patient).join(patient_group, Patient.id_patient == patient_group.c.patient_id).filter(patient_group.c.doctor == session.get('ID')).values(Patient)
+        if request.method=='POST' and (not request.form.get('MedicalRecordID') and not request.form.get('ImageID')
+                                        and not request.form.get('cf_id')):
+            #Patient data from html form
+            patient_CF = request.form['CF']
+            patient_name = request.form['name']
+            patient_surname = request.form['surname']
+            image_type = request.form['type']
+            patient = Patient.query.filter_by(CF=patient_CF).first()
+            print(type(patients))
+            if patient is None or patient.id_patient not in [p.id_patient for p in patients_value]:
+                flash('No patient in database or patient followed by this account!', 'danger')
+            else:
+                patient_id = patient.id_patient
+                images = Dicom_Image.query.filter_by(patient_id=patient_id).all()
+                return render_template("doctor_templates/image_visualizer.html", page="visualize_image", images=images, patient=patient)
+        elif request.method=='POST' and (not request.form.get('CF') and not request.form.get('name')
+                                        and not request.form.get('surname') and not request.form.get('type')):
+            medicalID = request.form['MedicalRecordID']
+            imageID = request.form['ImageID']
+            patient_CF = request.form['cf_id']
+            patient = Patient.query.filter_by(CF=patient_CF)
+            if not imageID and medicalID:
+                images = MedicalRecord.query.filter_by(record_id=medicalID).first().dicoms if medicalID else []
+            elif imageID:
+                images = Dicom_Image.query.filter_by(dicom_id=imageID).all() if imageID else []
             return render_template("doctor_templates/image_visualizer.html", page="visualize_image", images=images, patient=patient)
-    elif request.method=='POST' and (not request.form.get('CF') and not request.form.get('name')
-                                    and not request.form.get('surname') and not request.form.get('type')):
-        medicalID = request.form['MedicalRecordID']
-        imageID = request.form['ImageID']
-        patient_CF = request.form['cf_id']
-        patient = Patient.query.filter_by(CF=patient_CF)
-        if not imageID and medicalID:
-            images = MedicalRecord.query.filter_by(record_id=medicalID).first().dicoms if medicalID else []
-        elif imageID:
-            images = Dicom_Image.query.filter_by(dicom_id=imageID).all() if imageID else []
-        return render_template("doctor_templates/image_visualizer.html", page="visualize_image", images=images, patient=patient)
+    elif session.get('name')=='healthcareworker':
+        if request.method=='POST':
+            patient_CF = request.form['CF']
+            patient = Patient.query.filter_by(CF=patient_CF).first()
+            images = Dicom_Image.query.filter_by(patient_id=patient.id_patient).all()
+            return render_template("doctor_templates/image_visualizer.html", page="visualize_image", images=images, patient=patient)
     return render_template("doctor_templates/image_visualizer.html", page="visualize_image")
 
 @app.route("/dashboard/selected_image/<patient>", methods=['GET', 'POST'])
@@ -271,7 +279,8 @@ def add_image():
             dicom = Dicom_Image(dicom_id=random.randint(1000, 1876364), filename=file.filename,
                                 patient_id=patient_id, date=date, 
                                 base64_data=base64_data, image_dimension=2, 
-                                healthcareworker=hw)
+                                healthcareworker=hw,
+                                exame_name=name)
             db.session.add(dicom)
             db.session.commit()
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
