@@ -77,9 +77,8 @@ def signup():
         heashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         if utent == '1':
             patient = Patient.query.filter_by(CF=form.CF.data).first()
-            print(patient.birth_date)
             #if patient already exitst in db
-            if patient and patient.CF==form.CF.data and patient.registered==False and patient.birth_date==form.birth_date.data and patient.first_name==form.first_name.data and patient.surname==form.surname.data:
+            if patient and patient.CF==form.CF.data and patient.registered==False:
                 patient.password_patient=heashed_password
                 patient.email=form.email.data
                 patient.city = form.city.data

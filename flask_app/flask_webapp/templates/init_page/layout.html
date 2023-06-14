@@ -39,7 +39,7 @@
                 </li>
                 {% if session.get('name') == "admin" %}
                 <li class="nav-item">
-                  <a class="nav-link text-white" href="{{ url_for('admin_page') }}">View user list</a>
+                  <a class="nav-link text-white" href="{{ url_for('admin_page') }}">Dashboard</a>
                 </li>
               {% endif %}
                 {% if session.get('name')=="doctor" %}
