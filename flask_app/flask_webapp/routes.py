@@ -430,9 +430,10 @@ def patient_page():
     print(session.get('ID'))
     return render_template("patient_template/list_appointment.html", page='appointment', patient=patient)
 
-@app.route("/patient/list_test")
+@app.route("/patient/list_test/")
 def list_test():
-    return render_template("patient_template/list_test.html", page='list')
+    patient = Patient.query.filter_by(id_patient=session.get('ID')).first()
+    return render_template("patient_template/list_test.html", page='list', patient=patient)
 
 @app.route("/patient/change_details/<int:patient_id>", methods=['POST'])
 def change_patient_details(patient_id):
@@ -450,4 +451,10 @@ def change_patient_details(patient_id):
         patient.address = address
         flash('Details change corretly!', 'success')
     return redirect(url_for('patient_page'))
+
+@app.route("/patient/view_image/<int:dicom_id>")
+def visualize_image_patient(dicom_id):
+    image = Dicom_Image.query.filter_by(dicom_id=dicom_id).first()
+    base64_data = image.base64_data
+    return render_template("patient_template/visualizer_patient.html", page='visualizer_patient', base64_data=base64_data)
 

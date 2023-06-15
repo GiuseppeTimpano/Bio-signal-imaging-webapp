@@ -1,4 +1,35 @@
 {% extends "patient_template/layout_patient.html" %}
+
 {% block visualizer %}
 
+<div class="container">
+  <h2>Medical Record</h2>
+  <ul>
+    {% for mr in patient.mr %}
+      {% for exam in mr.dicoms %}
+        <li>{{ exam.exame_name }}</li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="container">
+  <h2>Medical Imaging acquisition</h2>
+  <div class="row">
+    {% for image in patient.images %}
+      <div class="col">
+        <ul>
+          <li>
+            {{image.exame_name}} acquired in {{image.date}} by {{image.healthcareworker.hw_role_not_doctor}}
+            <form action="{{ url_for('visualize_image_patient', dicom_id=image.dicom_id) }}">
+              <button type="submit" class="btn btn-primary">View image</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
 {% endblock %}
+
