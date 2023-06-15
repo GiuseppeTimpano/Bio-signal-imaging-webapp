@@ -433,3 +433,21 @@ def patient_page():
 @app.route("/patient/list_test")
 def list_test():
     return render_template("patient_template/list_test.html", page='list')
+
+@app.route("/patient/change_details/<int:patient_id>", methods=['POST'])
+def change_patient_details(patient_id):
+    city = request.form['city']
+    number = request.form['phone_number']
+    address = request.form['address']
+    patient = Patient.query.filter_by(id_patient=patient_id).first()
+    if city:
+        patient.city = city
+        flash('Details change corretly!', 'success')
+    if number:
+        patient.phone_number = number
+        flash('Details change corretly!', 'success')
+    if address:
+        patient.address = address
+        flash('Details change corretly!', 'success')
+    return redirect(url_for('patient_page'))
+
