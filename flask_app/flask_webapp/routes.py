@@ -240,7 +240,7 @@ def view_selected_image(patient):
         dicom.notified=True
         dicom_id = dicom.dicom_id
         return render_template('doctor_templates/view_image.html', image_data = image_selected, patient=patient, dicom_id=dicom_id, page='page_visualizer')
-
+    
 @app.route("/dashboard/selected_image/<int:dicom>/<int:patient>", methods=['POST'])
 def redirect_view_selected_image(dicom, patient):
     dicom = Dicom_Image.query.filter_by(dicom_id=dicom).first()
@@ -428,7 +428,8 @@ def confirm_role(worker_id):
 
 @app.route("/healthcareworker/images_patients")
 def all_images():
-    return render_template('doctor_templates/all_images.html', page='visualize_all_images')
+    patients = Patient.query.all()
+    return render_template('doctor_templates/all_images.html', page='visualize_all_images', patients=patients)
 
 @app.route("/patient/home_page")
 def patient_page():

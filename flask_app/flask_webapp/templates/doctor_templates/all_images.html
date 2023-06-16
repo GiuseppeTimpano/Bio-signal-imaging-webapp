@@ -1,4 +1,74 @@
 {% extends "doctor_templates/layout_doctor.html" %}
 {% block visualizer %}
-    
+    <div class="container">
+      <h1>Followed patients</h1>
+  
+      <!-- Barra di ricerca -->
+      <div class="row">
+        <div class="col-md-6">
+          <form class="d-flex" id="search-form">
+            <input class="form-control me-2" type="search" placeholder="Cerca per codice fiscale" aria-label="Cerca" id="search-input">
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+  
+      <!-- Elenco pazienti -->
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="list-group" id="patient-list">
+            {% for patient in patients %}
+              <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#patient{{ patient.id_patient }}" data-cf="{{ patient.CF }}">
+                {{ patient.first_name }} {{ patient.surname }} ({{ patient.CF }})
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="tab-content" id="patient-content">
+            {% for patient in patients %}
+              <div class="tab-pane fade" id="patient{{ patient.id_patient }}">
+                <h4>{{ patient.first_name }} {{ patient.surname }}</h4>
+                <p>
+                  {% if patient.images %}
+                  <ul>
+                    {% for image in patient.images %}
+                    <li>
+                        {{ image.exame_name }} acquired in {{ image.date }}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                  {% else %}
+                    Nessuna immagine associata a questo paziente.
+                  {% endif %}
+                </p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <script>
+      document.getElementById('search-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+  
+        // Get the search input value
+        var searchInput = document.getElementById('search-input').value.toLowerCase();
+  
+        // Iterate through patient list items
+        var patientListItems = document.querySelectorAll('#patient-list .list-group-item');
+        patientListItems.forEach(function(item) {
+          var patientCf = item.dataset.cf.toLowerCase();
+  
+          // Check if the patient CF matches the search input
+          if (patientCf.includes(searchInput)) {
+            item.classList.add('active'); // Select the patient
+          } else {
+            item.classList.remove('active'); // Deselect other patients
+          }
+        });
+      });
+    </script>
+  
 {% endblock %}

@@ -3,25 +3,26 @@
 {% block content %}
     <main class="form-signin w-100 m-auto">
 
-        <!--
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            {{ message }}
-        </div>
-        {% endfor %}
-        -->
+        <div class="container mt-4">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="alert alert-success flash-message" role="alert">
+                  {{ messages[0] }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endif %}
+            {% endwith %}
 
         <form method="POST" action="">
 
             {{ form.hidden_tag() }}
             
-            <div class="container justify-content-center">
+            <div class="container justify-content-center text-center">
                 <img class="mb-4" src="https://icon-library.com/images/health-icon-png/health-icon-png-24.jpg" alt="" width="72" height="72">
                 <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-            </div>
             
-            <div class="form-floating form-group">
+            
+            <div class="form-floating form-group justify-content-center text-center">
                 {{ form.email(type="email", class="form-control", id="floatingEmail", placeholder="Email") }}
                 <label for="floatingEmail">Email address</label>
                 {% if form.email.erros %}
@@ -34,7 +35,7 @@
                 {% endif %}
             </div>
        
-            <div class="form-floating form-group">
+            <div class="form-floating form-group justify-content-center text-center">
                 {{ form.password(type="password", class="form-control", id="floatingInput", placeholder="Password") }}
                 <label for="floatingInput">Password</label>
                 {% if form.password.erros %}
@@ -63,6 +64,8 @@
             <small class="text-muted">
                 Need An Account? <a class="ml-2" href="{{ url_for('signup') }}">Sign Up Now</a>
             </small>
+        </div>
+        </div>
 
 </main>
 {% endblock content %}
