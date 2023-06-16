@@ -16,7 +16,13 @@
                     <tr>
                         <td>{{patient.first_name}}</td>
                         <td>{{patient.surname}}</td>
-                        <td>{{patient.email}}</td>
+                        <td>
+                            {% if patient.email!=None %}
+                                {{patient.email}}
+                            {% else %}
+                                <em>Patient not signup</em>
+                            {% endif %}
+                        </td>
                         <td>{{patient.birth_date.strftime('%d/%m/%Y')}}</td>
                     </tr>
                 {% endfor %}

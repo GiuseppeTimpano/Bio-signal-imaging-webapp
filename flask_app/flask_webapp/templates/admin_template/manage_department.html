@@ -43,7 +43,7 @@
                     {% for department in departments %}
                         <tr>
                             <td>{{ department.department_name }}</td>
-                            <td>{{ department.head_of_department.name }} {{department.head_of_department.surname}}</td>
+                            <td>{{ department.head_of_department.name }} {{department.head_of_department.surname}} ID:{{department.head_of_department.id_worker}}</td>
                             <td>{{ department.department_email }}</td>
                             <td>{{ department.department_id }}</td>
                         </tr>

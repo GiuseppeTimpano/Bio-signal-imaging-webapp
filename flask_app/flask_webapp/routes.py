@@ -314,7 +314,9 @@ def list_patients():
 def list_doctors():
     doctors = HealthcareWorker.query.filter_by(role='doctor').all()
     departments = Department.query.all()
-    return render_template("admin_template/list_doctors.html", page="doctor", doctors=doctors, departments=departments)
+    head_of_department_list = HealthcareWorker.query.filter(HealthcareWorker.department_head != None).all()
+    print(head_of_department_list)
+    return render_template("admin_template/list_doctors.html", page="doctor", doctors=doctors, departments=departments, head_of_department_list=head_of_department_list)
 
 @app.route("/admin/list_healthcareworker")
 def list_workers():
@@ -340,6 +342,7 @@ def activate_account_hw(worker_id):
 @app.route("/admin/assign_doctor_to_dep/<int:doctor_id>", methods=['POST'])
 def assign_doctor_department(doctor_id):
     department_id = request.form.get('department')
+    department = Department.query.get(department_id)
     doctor = HealthcareWorker.query.get(doctor_id)
     if doctor:
         doctor.dep_rif = department_id
@@ -349,11 +352,12 @@ def assign_doctor_department(doctor_id):
 @app.route("/admin/manage_department", methods=['POST', 'GET'])
 def manage_department():
     form = DepartmentForm()
-    form.head_of_department.choices = [(doctor.id_worker, doctor.name) for doctor in HealthcareWorker.query.filter_by(role='doctor')]
+    form.head_of_department.choices = [(doctor.id_worker, f"{doctor.name} {doctor.surname} ({doctor.id_worker})") for doctor in HealthcareWorker.query.filter_by(role='doctor')]
     if form.validate_on_submit():
         department = Department(department_id=random.randint(1000, 4826484), department_name=form.name.data, department_email = form.email.data)
         head_of_department_id = form.head_of_department.data
         head_of_department = HealthcareWorker.query.get(head_of_department_id)
+        head_of_department.dep_rif = department.department_id
         department.head_of_department = head_of_department
         db.session.add(department)
         db.session.commit()

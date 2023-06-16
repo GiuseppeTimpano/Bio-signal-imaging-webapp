@@ -37,7 +37,7 @@
                     {% if doctor.is_active == False %}
                     <a href="{{ url_for('activate_account', doctor_id=doctor.id_worker) }}" class="btn btn-primary">Active doctor account</a>
                     {% endif %}
-                    {% if doctor.dep_rif %}
+                    {% if doctor.dep_rif and doctor not in head_of_department_list %}
                         <form method="POST" action="{{url_for('assign_doctor_department', doctor_id=doctor.id_worker)}}">
                             <select class="form-select" name="department" id="department_{{ doctor.id_worker }}" onchange="toggleConfirmButton('{{ doctor.id_worker }}')">
                                 <option value="">Change department for this doctor</option>
@@ -46,7 +46,7 @@
                                 {% endfor %}
                                 <!-- Aggiungi altre opzioni di dipartimento qui -->
                             </select>
-                            <button type="submit" class="btn btn-success btn-sm" id="confirmButton_{{ doctor.id_worker }}" disabled>Assign Department</button>
+                            <button type="submit" style="margin-top: 5px;" class="btn btn-success btn-sm" id="confirmButton_{{ doctor.id_worker }}" disabled>Assign Department</button>
                         </form>
                     {% endif %}
                 </td>
@@ -56,7 +56,7 @@
                         <select class="form-select" name="department" id="department_{{ doctor.id_worker }}" onchange="toggleConfirmButton('{{ doctor.id_worker }}')">
                             <option value="">Select department for this doctor</option>
                             {% for department in departments %}
-                            <option value="{{department.department_id}}">{{department.department_name}}</option>
+                                <option value="{{department.department_id}}">{{department.department_name}}</option>
                             {% endfor %}
                             <!-- Aggiungi altre opzioni di dipartimento qui -->
                         </select>
