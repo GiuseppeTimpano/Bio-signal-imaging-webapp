@@ -8,7 +8,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from flask_webapp import bcrypt
 from flask_webapp.models import Patient, Dicom_Image
 from werkzeug.utils import secure_filename
-from sqlalchemy import and_
+from sqlalchemy import and_, text
 import os
 import random
 from datetime import datetime, date
@@ -366,10 +366,12 @@ def remove_patient():
     doctor_id = session.get('ID')
     patient_id = request.form.get('patient_select')
     doctor = HealthcareWorker.query.filter_by(id_worker=doctor_id).first()
-    patient = Patient.query.filter_by(id_patient=patient_id).first()
-    doctor.patient.remove(patient)
+    patient_followed = Patient.query.filter_by(id_patient=patient_id).first()
+    delete_query = text("DELETE FROM patient_group WHERE patient_id = :patient_id AND doctor = :doctor_id")
+    db.session.execute(delete_query, {'patient_id': patient_followed.id_patient, 'doctor_id': doctor.id_worker})
     db.session.commit()
     return redirect(url_for('dicom_visualizer'))
+
 
 @app.route("/take_appointment", methods=['POST'])
 def take_appointment():

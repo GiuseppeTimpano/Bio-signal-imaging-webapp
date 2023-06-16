@@ -137,7 +137,7 @@
                                                       <label for="patient_select">Select a patient</label>
                                                       <select class="form-select" name="patient_select" id="patient_select" required>
                                                           {% for patient in patients %}
-                                                          <option value="{{ patient.id_patient }}">{{ patient.first_name }} {{ patient.surname }}</option>
+                                                          <option value="{{ patient.id_patient }}">{{ patient.first_name }} {{ patient.surname }} {{patient.CF}}</option>
                                                           {% endfor %}
                                                       </select>
                                                   </div>
